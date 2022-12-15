@@ -1,0 +1,9 @@
+POST http://localhost:3001/api/courses
+Content-Type: application/json
+
+{
+  "name": "Saksa 9",
+  "startDate": "2022-12-14",
+  "endDate": "2022-12-15",
+  "info": "very hard course"
+}
