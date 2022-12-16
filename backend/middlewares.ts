@@ -10,6 +10,8 @@ export const errorHandler = (
     res.status(400).json({ error: error.message });
   } else if (error.name == "CastError") {
     res.status(400).send({ error: "malformatted id" });
+  } else {
+    res.status(400).send({ error: error });
   }
   next(error);
 };
