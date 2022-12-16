@@ -1,4 +1,5 @@
-import { ICourse } from "./types";
+import { Schema } from "mongoose";
+import { ICourse, ISchedule } from "./types";
 
 const isString = (text: unknown): text is string => {
   return typeof text === "string" || text instanceof String;
@@ -15,6 +16,17 @@ const parseDate = (date: unknown): Date => {
   return new Date(date);
 };
 
+const parseId = (id: unknown): Schema.Types.ObjectId => {
+  if (!id || !isString(id)) throw new Error("error parsing id from body");
+  return new Schema.Types.ObjectId(id);
+};
+
+const parseCourses = (courses: unknown): Schema.Types.ObjectId[] => {
+  if (!courses) throw new Error("courses missing");
+  if (!Array.isArray(courses)) throw new Error("incorect courses array");
+  return courses.map((x) => parseId(x));
+};
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const parseCourse = (body: any): ICourse => {
   const base = {
@@ -23,5 +35,16 @@ export const parseCourse = (body: any): ICourse => {
     endDate: parseDate(body.endDate),
   };
   if (body.info) return { ...base, info: parseString(body.info) };
+  else return base;
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const parseSchedule = (body: any): ISchedule => {
+  const base = {
+    name: parseString(body.name),
+    courses: parseCourses(body.courses),
+  };
+  if (body.description)
+    return { ...base, description: parseString(body.description) };
   else return base;
 };
