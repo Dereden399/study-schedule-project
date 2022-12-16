@@ -6,6 +6,7 @@ import "dotenv/config";
 import { errorHandler } from "./middlewares";
 
 import courseController from "./controllers/courseController";
+import scheduleController from "./controllers/scheduleController";
 
 const MONGO_URI =
   (process.env.NODE_ENV === "test"
@@ -24,6 +25,7 @@ const app = express();
 
 app.use(express.json());
 app.use("/api/courses", courseController);
+app.use("/api/schedules", scheduleController);
 app.use(errorHandler);
 
 export default app;

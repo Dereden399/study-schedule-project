@@ -1,4 +1,4 @@
-import { ObjectId } from "mongoose";
+import mongoose from "mongoose";
 
 export interface ICourse {
   name: string;
@@ -10,5 +10,5 @@ export interface ICourse {
 export interface ISchedule {
   name: string;
   description?: string;
-  courses: ObjectId[];
+  courses: mongoose.Types.ObjectId[];
 }

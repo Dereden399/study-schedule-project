@@ -64,8 +64,15 @@ scheduleController.put("/:id", (async (req, res) => {
     finded.name = parsedBody.name;
     finded.courses = parsedBody.courses;
     if (parsedBody.description) finded.description = parsedBody.description;
-    const result = await finded.save();
-    res.status(201).json(result.toJSON());
+    const result = await (
+      await finded.save()
+    ).populate("courses", {
+      name: 1,
+      startDate: 1,
+      endDate: 1,
+      info: 1,
+    });
+    res.status(200).json(result.toJSON());
   } else {
     res.status(404).end();
   }
