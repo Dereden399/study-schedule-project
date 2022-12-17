@@ -12,3 +12,9 @@ export interface ISchedule {
   description?: string;
   courses: mongoose.Types.ObjectId[];
 }
+
+export interface IUser {
+  username: string;
+  passwordHash: string;
+  schedules: mongoose.Types.ObjectId[];
+}
