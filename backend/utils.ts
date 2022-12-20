@@ -5,7 +5,7 @@ const isString = (text: unknown): text is string => {
   return typeof text === "string" || text instanceof String;
 };
 
-const parseString = (text: unknown): string => {
+export const parseString = (text: unknown): string => {
   if (!text || !isString(text))
     throw new Error("error parsing string from body");
   return text;

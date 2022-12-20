@@ -3,10 +3,12 @@ import "express-async-errors";
 import mongoose from "mongoose";
 import "dotenv/config";
 
-import { errorHandler } from "./middlewares";
+import { errorHandler, tokenExtractor } from "./middlewares";
 
 import courseController from "./controllers/courseController";
 import scheduleController from "./controllers/scheduleController";
+import userController from "./controllers/userController";
+import loginController from "./controllers/loginController";
 
 const MONGO_URI =
   (process.env.NODE_ENV === "test"
@@ -24,8 +26,11 @@ mongoose
 const app = express();
 
 app.use(express.json());
+app.use(tokenExtractor);
 app.use("/api/courses", courseController);
 app.use("/api/schedules", scheduleController);
+app.use("/api/users", userController);
+app.use("/api/login", loginController);
 app.use(errorHandler);
 
 export default app;

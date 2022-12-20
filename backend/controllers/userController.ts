@@ -1,8 +1,28 @@
 import express, { RequestHandler } from "express";
 import User from "../models/User";
 import { ISchedule } from "../types";
+import * as bcrypt from "bcrypt";
+import { parseString } from "../utils";
 
 const userController = express.Router();
+
+userController.post("/", (async (req, res) => {
+  const username = parseString(req.body.username);
+  const password = parseString(req.body.password);
+  if (username.length < 5 || password.length < 5)
+    res
+      .status(400)
+      .json({ error: "username and password must be at least 5 letters long" });
+
+  const passwordHash = await bcrypt.hash(password, 10);
+  const user = new User({
+    username: username,
+    passwordHash: passwordHash,
+    schedules: [],
+  });
+  const saved = await user.save();
+  res.status(201).json(saved.toJSON());
+}) as RequestHandler);
 
 userController.get("/all", (async (_req, res) => {
   const users = await User.find({}).populate("schedules");
