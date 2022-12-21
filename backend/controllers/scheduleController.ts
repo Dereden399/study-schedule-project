@@ -1,4 +1,5 @@
 import express, { RequestHandler } from "express";
+import { AuthentificationCheck } from "../middlewares";
 import Schedule from "../models/schedule";
 import { parseSchedule } from "../utils";
 
@@ -42,37 +43,45 @@ scheduleController.get("/:id/courses", (async (req, res) => {
   }
 }) as RequestHandler);
 
-scheduleController.post("/", (async (req, res) => {
+scheduleController.post("/", AuthentificationCheck, (async (req, res) => {
   const scheduleFromBody = parseSchedule(req.body);
-  const toPost = new Schedule(scheduleFromBody);
+  const toPost = new Schedule({ ...scheduleFromBody, user: req.currentUserId });
   const result = await toPost.save();
   res.status(201).json(result.toJSON());
 }) as RequestHandler);
 
-scheduleController.delete("/:id", (async (req, res) => {
+scheduleController.delete("/:id", AuthentificationCheck, (async (req, res) => {
   const finded = await Schedule.findById(req.params.id);
   if (finded) {
-    await finded.delete();
-    res.status(200).end();
+    if (finded.user.toString() !== req.currentUserId)
+      res.status(405).json({ error: "can not delete other user's schedules" });
+    else {
+      await finded.delete();
+      res.status(200).end();
+    }
   } else res.status(404).end();
 }) as RequestHandler);
 
-scheduleController.put("/:id", (async (req, res) => {
+scheduleController.put("/:id", AuthentificationCheck, (async (req, res) => {
   const finded = await Schedule.findById(req.params.id);
   if (finded) {
-    const parsedBody = parseSchedule(req.body);
-    finded.name = parsedBody.name;
-    finded.courses = parsedBody.courses;
-    if (parsedBody.description) finded.description = parsedBody.description;
-    const result = await (
-      await finded.save()
-    ).populate("courses", {
-      name: 1,
-      startDate: 1,
-      endDate: 1,
-      info: 1,
-    });
-    res.status(200).json(result.toJSON());
+    if (finded.user.toString() !== req.currentUserId)
+      res.status(405).json({ error: "can not modify other user's schedules" });
+    else {
+      const parsedBody = parseSchedule(req.body);
+      finded.name = parsedBody.name;
+      finded.courses = parsedBody.courses;
+      if (parsedBody.description) finded.description = parsedBody.description;
+      const result = await (
+        await finded.save()
+      ).populate("courses", {
+        name: 1,
+        startDate: 1,
+        endDate: 1,
+        info: 1,
+      });
+      res.status(200).json(result.toJSON());
+    }
   } else {
     res.status(404).end();
   }

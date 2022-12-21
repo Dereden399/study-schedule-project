@@ -16,6 +16,7 @@ const courseSchema = new Schema<ICourse>({
     required: true,
   },
   info: String,
+  user: { type: Schema.Types.ObjectId, ref: "User" },
 });
 
 courseSchema.set("toJSON", {

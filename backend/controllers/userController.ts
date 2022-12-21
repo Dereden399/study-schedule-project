@@ -3,6 +3,7 @@ import User from "../models/User";
 import { ISchedule } from "../types";
 import * as bcrypt from "bcrypt";
 import { parseSchedules, parseString } from "../utils";
+import { AuthentificationCheck } from "../middlewares";
 
 const userController = express.Router();
 
@@ -37,9 +38,10 @@ userController.get("/:id", (async (req, res) => {
 }) as RequestHandler);
 
 userController.get("/:id/schedules", (async (req, res) => {
-  const user = await User.findById(req.params.id)
-    .populate("schedules")
-    .populate("courses");
+  const user = await User.findById(req.params.id).populate({
+    path: "schedules",
+    populate: { path: "courses" },
+  });
   if (user) {
     res.status(200).json(user.schedules.map((x) => x.toJSON()));
   } else res.status(404).end();
@@ -56,13 +58,17 @@ userController.get("/:id/courses", (async (req, res) => {
   } else res.status(404).end();
 }) as RequestHandler);
 
-userController.put("/:id", (async (req, res) => {
+userController.put("/:id", AuthentificationCheck, (async (req, res) => {
   const newSchedules = parseSchedules(req.body);
   const user = await User.findById(req.params.id);
   if (user) {
-    user.schedules = newSchedules;
-    const result = await user.save();
-    res.status(200).json(result.toJSON());
+    if (user._id.toString() !== req.currentUserId)
+      res.status(405).json({ error: "can not modify other user's account" });
+    else {
+      user.schedules = newSchedules;
+      const result = await user.save();
+      res.status(200).json(result.toJSON());
+    }
   } else res.status(404).end();
 }) as RequestHandler);
 

@@ -66,6 +66,8 @@ const setUpDB = async () => {
   await toSaveUser.save();
 };
 
+jest.setTimeout(20000);
+
 test("users are returned as json", async () => {
   await api
     .get("/api/users/all")
@@ -115,6 +117,21 @@ describe("1 user initially saved", () => {
         .send({ username: "dereden", password: "12345" });
       expect(result.status).toBe(201);
       expect(result.body.passwordHash).toBeUndefined();
+    });
+
+    test("login works with correct info", async () => {
+      const result = await api
+        .post("/api/login")
+        .send({ username: "admin", password: "admin" });
+      expect(result.status).toBe(200);
+      expect(result.body.token).toBeDefined();
+    });
+
+    test("login doesn't work with incorrect info", async () => {
+      await api
+        .post("/api/login")
+        .send({ username: "aboba", password: "aboba" })
+        .expect(401);
     });
 
     test("post nonvalid user doesn't work", async () => {

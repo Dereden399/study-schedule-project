@@ -28,7 +28,7 @@ const parseCourses = (courses: unknown): mongoose.Types.ObjectId[] => {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const parseCourse = (body: any): ICourse => {
+export const parseCourse = (body: any): Omit<ICourse, "user"> => {
   const base = {
     name: parseString(body.name),
     startDate: parseDate(body.startDate),
@@ -39,7 +39,7 @@ export const parseCourse = (body: any): ICourse => {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const parseSchedule = (body: any): ISchedule => {
+export const parseSchedule = (body: any): Omit<ISchedule, "user"> => {
   const base = {
     name: parseString(body.name),
     courses: parseCourses(body.courses),

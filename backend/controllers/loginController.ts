@@ -24,7 +24,9 @@ loginController.post("/", (async (req, res) => {
     id: user?._id,
   };
   const token = jwt.sign(userForToken, SECRET);
-  res.send(200).json({ token: token, username: user?.username, id: user?._id });
+  res
+    .status(200)
+    .json({ token: token, username: user?.username, id: user?._id });
 }) as RequestHandler);
 
 export default loginController;

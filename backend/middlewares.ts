@@ -1,4 +1,7 @@
 import { NextFunction, Request, Response } from "express";
+import * as jwt from "jsonwebtoken";
+
+const SECRET = process.env.SECRET || "SECRET";
 
 export const errorHandler = (
   error: Error,
@@ -27,5 +30,21 @@ export const tokenExtractor = (
   if (authorization && authorization.toLowerCase().startsWith("bearer ")) {
     req.token = authorization.substring(7);
   }
+  next();
+};
+
+export const AuthentificationCheck = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const decodedToken = jwt.verify(req.token || "", SECRET) as {
+    username: string;
+    id: string;
+  };
+  if (!req.token || !decodedToken.id)
+    res.status(401).json({ error: "token missing or invalid" });
+  req.currentUserId = decodedToken.id;
+
   next();
 };

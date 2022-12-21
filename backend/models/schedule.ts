@@ -8,6 +8,7 @@ const scheduleSchema = new Schema<ISchedule>({
   },
   description: String,
   courses: [{ type: Schema.Types.ObjectId, ref: "Course" }],
+  user: { type: Schema.Types.ObjectId, ref: "User" },
 });
 
 scheduleSchema.set("toJSON", {

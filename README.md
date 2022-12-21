@@ -19,7 +19,7 @@ A small fullstack web application to plan a study schedule
 1. course list
 2. name
 3. description
-4. user id // not yet
+4. user id
 
 ### Course
 
@@ -27,3 +27,4 @@ A small fullstack web application to plan a study schedule
 2. starting date
 3. end date
 4. additional info
+5. user id
