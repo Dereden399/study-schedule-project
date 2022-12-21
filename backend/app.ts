@@ -17,6 +17,7 @@ const MONGO_URI =
 console.log("connecting to ", MONGO_URI);
 
 mongoose.set("strictQuery", true);
+mongoose.set("strictPopulate", false);
 
 mongoose
   .connect(MONGO_URI)

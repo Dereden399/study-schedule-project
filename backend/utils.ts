@@ -48,3 +48,12 @@ export const parseSchedule = (body: any): ISchedule => {
     return { ...base, description: parseString(body.description) };
   else return base;
 };
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const parseSchedules = (body: any): mongoose.Types.ObjectId[] => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const schedules = body.schedules;
+  if (!schedules) throw new Error("schedules missing");
+  if (!Array.isArray(schedules)) throw new Error("incorect schedules array");
+  return schedules.map((x) => parseId(x));
+};
