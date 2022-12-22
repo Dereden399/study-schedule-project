@@ -8,26 +8,10 @@ import supertest from "supertest";
 import app from "../app";
 import Course from "../models/course";
 import Schedule from "../models/schedule";
-import { ICourse, ISchedule } from "../types";
+import { setUpDB } from "./helper";
+import * as jwt from "jsonwebtoken";
 
-const initialSchedules: ISchedule[] = [
-  { name: "Aalto", courses: [] },
-  { name: "Club activities", courses: [], description: "Caviar lovers club" },
-];
-
-const initialCourses: ICourse[] = [
-  {
-    name: "Saksa 1",
-    startDate: new Date("2022-12-12"),
-    endDate: new Date("2022-12-15"),
-  },
-  {
-    name: "Saksa 8",
-    startDate: new Date("2023-01-10"),
-    endDate: new Date("2023-02-01"),
-    info: "very hard course",
-  },
-];
+const SECRET = process.env.SECRET || "SECRET";
 
 const api = supertest(app);
 
@@ -42,17 +26,7 @@ test("schedules are returned as json", async () => {
 
 describe("working with initial 2 schedules", () => {
   beforeEach(async () => {
-    await Course.deleteMany({});
-    const first = new Course(initialCourses[0]);
-    const saved1 = await first.save();
-    const second = new Course(initialCourses[1]);
-    const saved2 = await second.save();
-    await Schedule.deleteMany({});
-    const firstSchedule = new Schedule(initialSchedules[0]);
-    firstSchedule.courses = [saved1._id, saved2._id];
-    await firstSchedule.save();
-    const secondSchedule = new Schedule(initialSchedules[1]);
-    await secondSchedule.save();
+    await setUpDB();
   });
 
   test("there are 2 schedules saved", async () => {
@@ -85,13 +59,24 @@ describe("working with initial 2 schedules", () => {
   });
 
   describe("adding new schedule", () => {
+    let token = "";
+    beforeEach(async () => {
+      const result = await api
+        .post("/api/login")
+        .send({ username: "admin", password: "admin" });
+      token = result.body.token;
+    });
     test("adding valid schedule", async () => {
       const scheduleInfo = {
         name: "O1",
         courses: [],
         description: "hard schedule",
       };
-      await api.post("/api/schedules").send(scheduleInfo).expect(201);
+      await api
+        .post("/api/schedules")
+        .set("Authorization", String("bearer " + token))
+        .send(scheduleInfo)
+        .expect(201);
       const res = await api.get("/api/schedules/all");
       expect(res.body).toHaveLength(3);
     });
@@ -113,6 +98,7 @@ describe("working with initial 2 schedules", () => {
 
       await api
         .post("/api/schedules")
+        .set("Authorization", String("bearer " + token))
         .send({ ...scheduleInfo, courses: [courseRes._id] })
         .expect(201);
       const res = await api.get("/api/schedules/all");
@@ -125,7 +111,11 @@ describe("working with initial 2 schedules", () => {
         courses: [],
         description: "hard schedule",
       };
-      await api.post("/api/schedules").send(scheduleInfo).expect(400);
+      await api
+        .post("/api/schedules")
+        .set("Authorization", String("bearer " + token))
+        .send(scheduleInfo)
+        .expect(400);
     });
 
     test("adding nonvalid course without courses", async () => {
@@ -134,7 +124,11 @@ describe("working with initial 2 schedules", () => {
         //courses: [],
         description: "hard schedule",
       };
-      await api.post("/api/schedules").send(scheduleInfo).expect(400);
+      await api
+        .post("/api/schedules")
+        .set("Authorization", String("bearer " + token))
+        .send(scheduleInfo)
+        .expect(400);
     });
 
     test("adding valid course without description", async () => {
@@ -142,7 +136,11 @@ describe("working with initial 2 schedules", () => {
         name: "O1",
         courses: [],
       };
-      await api.post("/api/schedules").send(scheduleInfo).expect(201);
+      await api
+        .post("/api/schedules")
+        .set("Authorization", String("bearer " + token))
+        .send(scheduleInfo)
+        .expect(201);
       const res = await api.get("/api/schedules/all");
       expect(res.body).toHaveLength(3);
     });
@@ -153,40 +151,15 @@ describe("working with initial 2 schedules", () => {
         courses: [],
         description: "hard schedule",
       };
-      await api.post("/api/schedules").send(scheduleInfo).expect(201);
+      await api
+        .post("/api/schedules")
+        .set("Authorization", String("bearer " + token))
+        .send(scheduleInfo)
+        .expect(201);
       const res = await api.get("/api/schedules/all");
       const id = res.body.find((x: { name: string }) => x.name === "O1").id;
       const findedRes = await api.get(`/api/schedules/${id}`);
       expect(findedRes.body.name).toBe("O1");
-    });
-  });
-  describe("deleting", () => {
-    test("deleting schedule with valid id", async () => {
-      const scheduleToDelete = await Schedule.findOne({ name: "Aalto" });
-      if (scheduleToDelete) {
-        const id = scheduleToDelete._id;
-        await api.delete(`/api/schedules/${id.toString()}`).expect(200);
-      }
-    });
-
-    test("deleting with nonvalid id", async () => {
-      await api.delete("/api/courses/123123123123123").expect(400);
-    });
-  });
-  describe("changing", () => {
-    test("changing valid schedule", async () => {
-      const findedSchedule = await Schedule.findOne({ name: "Aalto" });
-      if (findedSchedule) {
-        const redacted = {
-          name: findedSchedule.name + " 2022",
-          courses: findedSchedule.courses,
-        };
-        const result = await api
-          .put(`/api/schedules/${findedSchedule._id.toString()}`)
-          .send(redacted);
-        expect(result.status).toBe(200);
-        expect(result.body.name).toBe("Aalto 2022");
-      }
     });
 
     test("adding course to schedule", async () => {
@@ -206,14 +179,108 @@ describe("working with initial 2 schedules", () => {
         };
         const result = await api
           .put(`/api/schedules/${findedSchedule._id.toString()}`)
+          .set("Authorization", String("bearer " + token))
           .send(redacted);
         expect(result.status).toBe(200);
         expect(result.body.courses[2].name).toBe("Saksa 9");
       }
     });
 
+    test("can not add without authorization", async () => {
+      const scheduleInfo = {
+        name: "O1",
+        courses: [],
+        description: "hard schedule",
+      };
+      await api.post("/api/schedules").send(scheduleInfo).expect(401);
+    });
+  });
+
+  describe("deleting", () => {
+    let token = "";
+    beforeEach(async () => {
+      const result = await api
+        .post("/api/login")
+        .send({ username: "admin", password: "admin" });
+      token = result.body.token;
+    });
+    test("deleting schedule with valid id", async () => {
+      const scheduleToDelete = await Schedule.findOne({ name: "Aalto" });
+      if (scheduleToDelete) {
+        const id = scheduleToDelete._id;
+        await api
+          .delete(`/api/schedules/${id.toString()}`)
+          .set("Authorization", String("bearer " + token))
+          .expect(200);
+      }
+    });
+
+    test("deleting with nonvalid id", async () => {
+      await api
+        .delete("/api/courses/123123123123123")
+        .set("Authorization", String("bearer " + token))
+        .expect(400);
+    });
+
+    test("can not delete other user's schedules", async () => {
+      const scheduleToDelete = await Schedule.findOne({ name: "Aalto" });
+      const unrealUser = { username: "aboba", id: "adad123jn1n4r8jrfiu2398" };
+      token = jwt.sign(unrealUser, SECRET);
+      if (scheduleToDelete) {
+        const id = scheduleToDelete._id;
+        await api
+          .delete(`/api/schedules/${id.toString()}`)
+          .set("Authorization", String("bearer " + token))
+          .expect(405);
+      }
+    });
+  });
+  describe("changing", () => {
+    let token = "";
+    beforeEach(async () => {
+      const result = await api
+        .post("/api/login")
+        .send({ username: "admin", password: "admin" });
+      token = result.body.token;
+    });
+    test("changing valid schedule", async () => {
+      const findedSchedule = await Schedule.findOne({ name: "Aalto" });
+      if (findedSchedule) {
+        const redacted = {
+          name: findedSchedule.name + " 2022",
+          courses: findedSchedule.courses,
+        };
+        const result = await api
+          .put(`/api/schedules/${findedSchedule._id.toString()}`)
+          .set("Authorization", String("bearer " + token))
+          .send(redacted);
+        expect(result.status).toBe(200);
+        expect(result.body.name).toBe("Aalto 2022");
+      }
+    });
+
     test("changing nonvalid course", async () => {
-      await api.put("/api/courses/13123123123123123123").expect(400);
+      await api
+        .put("/api/courses/13123123123123123123")
+        .set("Authorization", String("bearer " + token))
+        .expect(400);
+    });
+
+    test("can not change other user's schedules", async () => {
+      const findedSchedule = await Schedule.findOne({ name: "Aalto" });
+      if (findedSchedule) {
+        const redacted = {
+          name: findedSchedule.name + " 2022",
+          courses: findedSchedule.courses,
+        };
+        const unrealUser = { username: "aboba", id: "adad123jn1n4r8jrfiu2398" };
+        token = jwt.sign(unrealUser, SECRET);
+        await api
+          .put(`/api/schedules/${findedSchedule._id.toString()}`)
+          .set("Authorization", String("bearer " + token))
+          .send(redacted)
+          .expect(405);
+      }
     });
   });
 });

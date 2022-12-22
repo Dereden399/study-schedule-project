@@ -6,65 +6,11 @@
 import mongoose from "mongoose";
 import supertest from "supertest";
 import app from "../app";
-import * as bcrypt from "bcrypt";
 import User from "../models/User";
 import Schedule from "../models/schedule";
-import Course from "../models/course";
-import { ICourse, ISchedule, IUser } from "../types";
+import { setUpDB } from "./helper";
 
 const api = supertest(app);
-
-const initialUser = async (): Promise<IUser> => {
-  const hash = await bcrypt.hash("admin", 10);
-  return {
-    username: "admin",
-    passwordHash: hash,
-    schedules: [],
-  };
-};
-
-const initialSchedules: ISchedule[] = [
-  { name: "Aalto", courses: [] },
-  { name: "Club activities", courses: [], description: "Caviar lovers club" },
-];
-
-const initialCourses: ICourse[] = [
-  {
-    name: "Saksa 1",
-    startDate: new Date("2022-12-12"),
-    endDate: new Date("2022-12-15"),
-  },
-  {
-    name: "Saksa 8",
-    startDate: new Date("2023-01-10"),
-    endDate: new Date("2023-02-01"),
-    info: "very hard course",
-  },
-];
-
-const setUpDB = async () => {
-  await User.deleteMany({});
-  await Schedule.deleteMany({});
-  await Course.deleteMany({});
-
-  const toSaveUser = new User(await initialUser());
-
-  const first = new Course(initialCourses[0]);
-  const saved1 = await first.save();
-  const second = new Course(initialCourses[1]);
-  const saved2 = await second.save();
-  const firstSchedule = new Schedule(initialSchedules[0]);
-  firstSchedule.courses = [saved1._id, saved2._id];
-  await firstSchedule.save();
-
-  const secondSchedule = new Schedule(initialSchedules[1]);
-  secondSchedule.courses = [saved1._id];
-  await secondSchedule.save();
-
-  toSaveUser.schedules = [firstSchedule._id, secondSchedule._id];
-
-  await toSaveUser.save();
-};
 
 jest.setTimeout(20000);
 
@@ -160,6 +106,13 @@ describe("1 user initially saved", () => {
   });
 
   describe("changing user's data", () => {
+    let token = "";
+    beforeEach(async () => {
+      const result = await api
+        .post("/api/login")
+        .send({ username: "admin", password: "admin" });
+      token = result.body.token;
+    });
     test("can add new schedule to user's list", async () => {
       const newSchedule = new Schedule({ name: "new Schedule", courses: [] });
       const savedSchedule = await newSchedule.save();
@@ -168,6 +121,7 @@ describe("1 user initially saved", () => {
         const list = [...user.schedules, savedSchedule._id];
         const result = await api
           .put(`/api/users/${user._id}`)
+          .set("Authorization", String("bearer " + token))
           .send({ schedules: list });
         expect(result.status).toBe(200);
         expect(result.body.schedules).toHaveLength(3);

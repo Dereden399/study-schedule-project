@@ -42,8 +42,9 @@ export const AuthentificationCheck = (
     username: string;
     id: string;
   };
-  if (!req.token || !decodedToken.id)
+  if (!req.token || !decodedToken.id) {
     res.status(401).json({ error: "token missing or invalid" });
+  }
   req.currentUserId = decodedToken.id;
 
   next();

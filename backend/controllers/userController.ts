@@ -26,12 +26,18 @@ userController.post("/", (async (req, res) => {
 }) as RequestHandler);
 
 userController.get("/all", (async (_req, res) => {
-  const users = await User.find({}).populate("schedules");
+  const users = await User.find({}).populate(
+    "schedules",
+    "name description courses"
+  );
   res.status(200).json(users.map((x) => x.toJSON()));
 }) as RequestHandler);
 
 userController.get("/:id", (async (req, res) => {
-  const user = await User.findById(req.params.id).populate("schedules");
+  const user = await User.findById(req.params.id).populate(
+    "schedules",
+    "name description courses"
+  );
   if (user) {
     res.status(200).json(user.toJSON());
   } else res.status(404).end();
@@ -40,7 +46,8 @@ userController.get("/:id", (async (req, res) => {
 userController.get("/:id/schedules", (async (req, res) => {
   const user = await User.findById(req.params.id).populate({
     path: "schedules",
-    populate: { path: "courses" },
+    select: "name description courses",
+    populate: { path: "courses", select: "name startDate endDate info" },
   });
   if (user) {
     res.status(200).json(user.schedules.map((x) => x.toJSON()));
