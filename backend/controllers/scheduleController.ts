@@ -1,7 +1,9 @@
 import express, { RequestHandler } from "express";
+import mongoose from "mongoose";
 import { AuthentificationCheck } from "../middlewares";
+import Course from "../models/course";
 import Schedule from "../models/schedule";
-import { parseSchedule } from "../utils";
+import { parseCourse, parseSchedule } from "../utils";
 
 const scheduleController = express.Router();
 
@@ -48,6 +50,33 @@ scheduleController.post("/", AuthentificationCheck, (async (req, res) => {
   const toPost = new Schedule({ ...scheduleFromBody, user: req.currentUserId });
   const result = await toPost.save();
   res.status(201).json(result.toJSON());
+}) as RequestHandler);
+
+scheduleController.post("/:id/addCourse", AuthentificationCheck, (async (
+  req,
+  res
+) => {
+  const finded = await Schedule.findById(req.params.id);
+  if (finded) {
+    const courseFromBody = parseCourse(req.body);
+    const courseToSave = new Course({
+      ...courseFromBody,
+      user: new mongoose.Types.ObjectId(req.currentUserId),
+    });
+    await courseToSave.save();
+    finded.courses = [...finded.courses, courseToSave._id];
+    const result = await (
+      await finded.save()
+    ).populate("courses", {
+      name: 1,
+      startDate: 1,
+      endDate: 1,
+      info: 1,
+    });
+    res.status(201).json(result.toJSON());
+  } else {
+    res.status(404).end();
+  }
 }) as RequestHandler);
 
 scheduleController.delete("/:id", AuthentificationCheck, (async (req, res) => {

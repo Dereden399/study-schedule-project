@@ -162,7 +162,7 @@ describe("working with initial 2 schedules", () => {
       expect(findedRes.body.name).toBe("O1");
     });
 
-    test("adding course to schedule", async () => {
+    test("adding course to schedule via put", async () => {
       const findedSchedule = await Schedule.findOne({ name: "Aalto" });
       if (findedSchedule) {
         const course1 = {
@@ -182,6 +182,25 @@ describe("working with initial 2 schedules", () => {
           .set("Authorization", String("bearer " + token))
           .send(redacted);
         expect(result.status).toBe(200);
+        expect(result.body.courses[2].name).toBe("Saksa 9");
+      }
+    });
+
+    test("adding course to schedule via post", async () => {
+      const findedSchedule = await Schedule.findOne({ name: "Aalto" });
+      if (findedSchedule) {
+        const course1 = {
+          name: "Saksa 9",
+          startDate: new Date("2023-01-10"),
+          endDate: new Date("2023-02-01"),
+          info: "very hard course",
+        };
+        const result = await api
+          .post(`/api/schedules/${findedSchedule._id.toString()}/addCourse`)
+          .set("Authorization", String("bearer " + token))
+          .send(course1)
+          .expect(201);
+        expect(result.body.courses).toHaveLength(3);
         expect(result.body.courses[2].name).toBe("Saksa 9");
       }
     });
