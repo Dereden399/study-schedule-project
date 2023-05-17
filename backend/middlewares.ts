@@ -38,7 +38,7 @@ export const AuthentificationCheck = (
   res: Response,
   next: NextFunction
 ) => {
-  const decodedToken = jwt.verify(req.token || "", SECRET) as {
+  const decodedToken = jwt.verify(req.token || "invalid_token", SECRET) as {
     username: string;
     id: string;
   };
