@@ -11,7 +11,7 @@ const PCMenu = ({ closeMenu }: { closeMenu: () => void }) => {
       <Heading as={"h4"} size={"lg"}>
         Study Schedule
       </Heading>
-      <HStack spacing={4}>
+      <HStack spacing={4} fontSize={"xl"}>
         <Link as={RouterLink} to="/" onClick={closeMenu}>
           Home
         </Link>

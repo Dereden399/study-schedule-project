@@ -22,8 +22,11 @@ const NavBar = () => {
 
   const handleNavbarStick = useCallback(() => {
     if (typeof window === "undefined") return;
+    if (window.scrollY <= 20 && !showNavbar) {
+      setShowNavbar(true);
+      return;
+    }
     const diff = window.scrollY - pivot;
-    console.log(diff);
     if (diff > 0 && wasScrollingDown) {
       setPivot(window.scrollY);
     } else if (diff > 100) {

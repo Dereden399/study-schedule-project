@@ -4,13 +4,21 @@ import App from "./App.tsx";
 import {
   ChakraProvider,
   extendTheme,
-  type ThemeConfig,
+  StyleFunctionProps,
 } from "@chakra-ui/react";
+import { mode } from "@chakra-ui/theme-tools";
 import { BrowserRouter } from "react-router-dom";
 
-const config: ThemeConfig = {
+const config = {
   initialColorMode: "light",
   useSystemColorMode: true,
+  styles: {
+    global: (props: StyleFunctionProps) => ({
+      body: {
+        bg: mode("gray.50", "gray.800")(props),
+      },
+    }),
+  },
 };
 
 const theme = extendTheme(config);

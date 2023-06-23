@@ -18,6 +18,7 @@ const MobileMenu = ({ closeMenu }: { closeMenu: () => void }) => (
     top={"3rem"}
     width={"full"}
     bg={useColorModeValue("gray.100", "gray.900")}
+    fontSize={"xl"}
   >
     <Link as={RouterLink} to="/" onClick={closeMenu}>
       Home
