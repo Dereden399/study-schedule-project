@@ -41,7 +41,7 @@ const NavBar = () => {
       setWasScrollingDown(false);
       setPivot(window.scrollY);
     }
-  }, [wasScrollingDown, pivot, onClose]);
+  }, [wasScrollingDown, pivot, onClose, showNavbar]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {

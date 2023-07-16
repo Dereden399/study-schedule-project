@@ -35,7 +35,7 @@ const initValues: initValuesType = {
   password: "",
 };
 
-const LoginForm = () => {
+const RegisterForm = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   const submitHandler = (
@@ -116,7 +116,7 @@ const LoginForm = () => {
               width={"full"}
               size={"lg"}
             >
-              Log in
+              Sign in
             </Button>
           </VStack>
         </Form>
@@ -125,4 +125,4 @@ const LoginForm = () => {
   );
 };
 
-export default LoginForm;
+export default RegisterForm;
