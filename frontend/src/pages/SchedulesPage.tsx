@@ -38,9 +38,14 @@ const SchedulesPage = () => {
           <InfoSign
             header="No schedules yet"
             info={"You can add one using the button above"}
+            iconSize={5}
           />
         ) : filteredSchedules.length == 0 ? (
-          <InfoSign header="No schedules for that filter" info={""} />
+          <InfoSign
+            header="No schedules for that filter"
+            info={""}
+            iconSize={5}
+          />
         ) : (
           filteredSchedules.map((schedule) => (
             <ScheduleBox schedule={schedule} key={schedule.id} />
