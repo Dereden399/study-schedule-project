@@ -7,23 +7,12 @@ import {
   Input,
   VStack,
 } from "@chakra-ui/react";
-import {
-  FormikHelpers,
-  Formik,
-  Form,
-  FieldInputProps,
-  FormikProps,
-  Field,
-} from "formik";
+import { FormikHelpers, Formik, Form, Field } from "formik";
+import { MyFieldProps } from "../types";
 
 interface InitValuesType {
   name: string;
   description: string;
-}
-
-interface MyFieldProps {
-  field: FieldInputProps<string>;
-  form: FormikProps<InitValuesType>;
 }
 
 const initialValues: InitValuesType = {
@@ -46,7 +35,7 @@ const NewScheduleForm = ({ onClose }: { onClose: () => void }) => {
         <Form>
           <VStack spacing={6}>
             <Field name="name">
-              {({ field, form }: MyFieldProps) => (
+              {({ field, form }: MyFieldProps<string, InitValuesType>) => (
                 <FormControl
                   isInvalid={form.touched.name && Boolean(form.errors.name)}
                 >
@@ -64,7 +53,7 @@ const NewScheduleForm = ({ onClose }: { onClose: () => void }) => {
               )}
             </Field>
             <Field name="description">
-              {({ field, form }: MyFieldProps) => (
+              {({ field, form }: MyFieldProps<string, InitValuesType>) => (
                 <FormControl
                   isInvalid={
                     form.touched.description && Boolean(form.errors.description)

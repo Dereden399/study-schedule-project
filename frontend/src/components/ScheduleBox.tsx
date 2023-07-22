@@ -35,7 +35,9 @@ const ScheduleBox = ({ schedule }: { schedule: Schedule }) => {
       as={motion.div}
       h={isOpen ? "12rem" : "5rem"}
       onClick={() => setIsOpen((isOpen) => !isOpen)}
+      _hover={isOpen ? {} : { transform: "scale(1.01)" }}
       transition="0.1s ease-in-out"
+      shadow={"md"}
     >
       <HStack>
         <VStack w="full" alignItems={"start"}>

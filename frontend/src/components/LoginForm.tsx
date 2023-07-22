@@ -10,27 +10,16 @@ import {
   InputRightElement,
   VStack,
 } from "@chakra-ui/react";
-import {
-  Field,
-  FieldInputProps,
-  Form,
-  Formik,
-  FormikHelpers,
-  FormikProps,
-} from "formik";
+import { Field, Form, Formik, FormikHelpers } from "formik";
 import { useState } from "react";
+import { MyFieldProps } from "../types";
 
-interface initValuesType {
+interface InitValuesType {
   username: string;
   password: string;
 }
 
-interface MyFieldProps {
-  field: FieldInputProps<string>;
-  form: FormikProps<initValuesType>;
-}
-
-const initValues: initValuesType = {
+const initValues: InitValuesType = {
   username: "",
   password: "",
 };
@@ -39,8 +28,8 @@ const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   const submitHandler = (
-    values: initValuesType,
-    actions: FormikHelpers<initValuesType>
+    values: InitValuesType,
+    actions: FormikHelpers<InitValuesType>
   ) => {
     console.log(values);
     actions.setSubmitting(false);
@@ -52,7 +41,7 @@ const LoginForm = () => {
         <Form>
           <VStack spacing={6}>
             <Field name="username">
-              {({ field, form }: MyFieldProps) => (
+              {({ field, form }: MyFieldProps<string, InitValuesType>) => (
                 <FormControl
                   isInvalid={
                     form.touched.username && Boolean(form.errors.username)
@@ -70,7 +59,7 @@ const LoginForm = () => {
               )}
             </Field>
             <Field name="password">
-              {({ field, form }: MyFieldProps) => (
+              {({ field, form }: MyFieldProps<string, InitValuesType>) => (
                 <FormControl
                   isInvalid={
                     form.touched.password && Boolean(form.errors.password)

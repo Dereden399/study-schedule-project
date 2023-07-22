@@ -1,10 +1,15 @@
-import { Container, Flex, Heading, IconButton, Link } from "@chakra-ui/react";
+import {
+  Button,
+  Container,
+  Heading,
+  IconButton,
+  Link,
+  Stack,
+} from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
 import { Link as RouterLink } from "react-router-dom";
 import useAppSelector from "../hooks/useAppSelector";
 import InfoSign from "../components/InfoSign";
-import { useEffect, useState } from "react";
-import { Course } from "../types";
 import { SettingsIcon } from "@chakra-ui/icons";
 import CoursesList from "../components/CoursesList";
 import Calendar from "../components/Calendar";
@@ -14,24 +19,6 @@ const SchedulePage = () => {
   const schedule = useAppSelector((state) =>
     state.schedule.schedules.find((x) => x.id == id)
   );
-  const [courses, setCourses] = useState<Course[]>([]);
-
-  useEffect(() => {
-    setCourses([
-      {
-        name: "Happy Birthday",
-        startDate: new Date("2023-07-18"),
-        endDate: new Date("2023-07-19"),
-        info: "Yay",
-      },
-      {
-        name: "Course 1",
-        startDate: new Date("2023-09-03T10:15:00"),
-        endDate: new Date("2023-09-03T12:00:00"),
-        info: "Not Yay",
-      },
-    ]);
-  }, []);
 
   if (!schedule) return <ScheduleNotFound />;
 
@@ -41,10 +28,17 @@ const SchedulePage = () => {
         {schedule.name}
         <IconButton aria-label="Edit schedule" icon={<SettingsIcon />} ms={1} />
       </Heading>
-      <Flex direction={{ sm: "column", md: "row" }}>
-        <CoursesList courses={courses} />
+      <Stack direction={{ base: "column", lg: "row" }} mt="5" spacing={1}>
+        <Button
+          colorScheme="teal"
+          w="full"
+          display={{ base: "flex", md: "none" }}
+        >
+          Open courses menu
+        </Button>
+        <CoursesList />
         <Calendar />
-      </Flex>
+      </Stack>
     </Container>
   );
 };
