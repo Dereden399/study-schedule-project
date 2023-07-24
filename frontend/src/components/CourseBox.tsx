@@ -1,6 +1,5 @@
 import {
   Box,
-  Flex,
   HStack,
   Heading,
   IconButton,
@@ -9,7 +8,13 @@ import {
 import { Course } from "../types";
 import { SettingsIcon } from "@chakra-ui/icons";
 
-const CourseBox = ({ course }: { course: Course }) => {
+const CourseBox = ({
+  course,
+  handleEdit,
+}: {
+  course: Course;
+  handleEdit: (course: Course) => void;
+}) => {
   return (
     <Box
       bg={useColorModeValue("gray.200", "gray.700")}
@@ -21,13 +26,14 @@ const CourseBox = ({ course }: { course: Course }) => {
     >
       <HStack justifyContent={"space-between"} alignContent={"center"}>
         <Heading as={"h3"} size={"md"} textAlign={"center"}>
-          {course.name}
+          {course.title}
         </Heading>
         <IconButton
           variant="ghost"
           colorScheme="gray"
           aria-label="See menu"
           icon={<SettingsIcon />}
+          onClick={() => handleEdit(course)}
         />
       </HStack>
     </Box>

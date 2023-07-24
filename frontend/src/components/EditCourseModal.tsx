@@ -18,7 +18,7 @@ import {
 } from "@chakra-ui/react";
 import { Field, Form, Formik, FormikHelpers } from "formik";
 import { DatePicker } from "./DatePicker";
-import { MyFieldProps } from "../types";
+import { Course, MyFieldProps } from "../types";
 import { useEffect } from "react";
 
 interface InitValuesType {
@@ -39,23 +39,24 @@ const initialValues: InitValuesType = {
   allDay: false,
 };
 
-const AddCourseModal = ({
+const EditCourseModal = ({
+  course,
   isOpen,
   onClose,
-  initStart,
-  initEnd,
 }: {
+  course: Course | null;
   isOpen: boolean;
   onClose: () => void;
-  initStart: Date | null;
-  initEnd: Date | null;
 }) => {
   useEffect(() => {
-    if (initStart) initialValues.start = initStart;
-    else initialValues.start = new Date(nowTime.setHours(0, 0, 0, 0));
-    if (initEnd) initialValues.end = initEnd;
-    else initialValues.end = new Date(nowTime.setHours(1, 0, 0, 0));
-  }, [initEnd, initStart]);
+    if (course) {
+      initialValues.title = course.title;
+      initialValues.info = course.info || "";
+      initialValues.allDay = course.allDay;
+      initialValues.start = course.start;
+      initialValues.end = course.end;
+    }
+  }, [course]);
 
   const submitHandler = (
     values: InitValuesType,
@@ -66,6 +67,8 @@ const AddCourseModal = ({
     onClose();
   };
 
+  if (!course) return <></>;
+
   return (
     <Modal
       isOpen={isOpen}
@@ -75,14 +78,14 @@ const AddCourseModal = ({
     >
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader fontSize={"xl"}>Add Course</ModalHeader>
+        <ModalHeader fontSize={"xl"}>{course.title}</ModalHeader>
         <ModalCloseButton />
 
         <Formik initialValues={initialValues} onSubmit={submitHandler}>
           {(props) => (
             <Form>
               <ModalBody>
-                <VStack spacing={6}>
+                <VStack spacing={6} w="full">
                   <Field name="title">
                     {({
                       field,
@@ -93,7 +96,7 @@ const AddCourseModal = ({
                           form.touched.title && Boolean(form.errors.title)
                         }
                       >
-                        <FormLabel fontSize={"xl"}>Course's name</FormLabel>
+                        <FormLabel fontSize={"xl"}>New name</FormLabel>
                         <Input
                           placeholder="Name..."
                           type="text"
@@ -107,9 +110,7 @@ const AddCourseModal = ({
                   <Field name="info">
                     {({ field }: MyFieldProps<string, InitValuesType>) => (
                       <FormControl>
-                        <FormLabel fontSize={"xl"}>
-                          Additional info (Optional)
-                        </FormLabel>
+                        <FormLabel fontSize={"xl"}>New info</FormLabel>
                         <Textarea
                           placeholder="Info..."
                           resize={"none"}
@@ -129,7 +130,12 @@ const AddCourseModal = ({
                       {({ field }: MyFieldProps<number, InitValuesType>) => (
                         <FormControl maxW="6rem">
                           <FormLabel fontSize={"xl"}>All day?</FormLabel>
-                          <Switch size={"lg"} colorScheme="teal" {...field} />
+                          <Switch
+                            size={"lg"}
+                            colorScheme="teal"
+                            {...field}
+                            defaultChecked={course.allDay}
+                          />
                         </FormControl>
                       )}
                     </Field>
@@ -139,7 +145,7 @@ const AddCourseModal = ({
                         form,
                       }: MyFieldProps<Date, InitValuesType>) => (
                         <FormControl>
-                          <FormLabel fontSize={"xl"}>Starts</FormLabel>
+                          <FormLabel fontSize={"xl"}>New start date</FormLabel>
                           <DatePicker
                             value={field.value}
                             onChange={(val) =>
@@ -157,7 +163,7 @@ const AddCourseModal = ({
                           form,
                         }: MyFieldProps<Date, InitValuesType>) => (
                           <FormControl>
-                            <FormLabel fontSize={"xl"}>Ends</FormLabel>
+                            <FormLabel fontSize={"xl"}>New end date</FormLabel>
                             <DatePicker
                               value={field.value}
                               onChange={(val) =>
@@ -186,7 +192,7 @@ const AddCourseModal = ({
                   type="submit"
                   isLoading={props.isSubmitting}
                 >
-                  Add
+                  Save
                 </Button>
               </ModalFooter>
             </Form>
@@ -197,4 +203,4 @@ const AddCourseModal = ({
   );
 };
 
-export default AddCourseModal;
+export default EditCourseModal;

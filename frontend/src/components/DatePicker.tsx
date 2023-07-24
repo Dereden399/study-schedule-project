@@ -165,15 +165,20 @@ function useDatePickerStyles() {
 export interface DatePickerProps {
   value: Date;
   onChange: (date: Date | null) => void;
+  showTime: boolean;
 }
 
-export const DatePicker: FC<DatePickerProps> = ({ value, onChange }) => {
+export const DatePicker: FC<DatePickerProps> = ({
+  value,
+  onChange,
+  showTime,
+}) => {
   const styles = useDatePickerStyles();
   const render = useCallback(
     ({ css }: ClassNamesContent) => {
       return (
         <ReactDatePicker
-          dateFormat="dd/MM/yyyy, HH:mm"
+          dateFormat={showTime ? "dd MMMM, yyyy, HH:mm" : "dd MMMM, yyyy"}
           showPopperArrow={false}
           popperClassName={css({ marginTop: "4px!important" })}
           calendarClassName={css(styles)}
@@ -183,14 +188,14 @@ export const DatePicker: FC<DatePickerProps> = ({ value, onChange }) => {
           }
           customInput={<CustomInput />}
           renderCustomHeader={CustomHeader}
-          showTimeSelect
+          showTimeSelect={showTime}
           timeFormat="HH:mm"
           timeIntervals={15}
           withPortal
         />
       );
     },
-    [onChange, styles, value]
+    [onChange, showTime, styles, value]
   );
 
   return <ClassNames>{render}</ClassNames>;

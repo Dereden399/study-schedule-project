@@ -11,11 +11,20 @@ export interface Schedule {
   id: string;
 }
 
-export interface Course {
+export interface CourseResponse {
   id: string;
   name: string;
   startDate: Date;
   endDate: Date;
+  info?: string;
+}
+
+export interface Course {
+  id: string;
+  title: string;
+  start: Date;
+  end: Date;
+  allDay: boolean;
   info?: string;
 }
 
