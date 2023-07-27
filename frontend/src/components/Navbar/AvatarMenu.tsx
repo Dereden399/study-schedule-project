@@ -20,9 +20,6 @@ const AvatarMenu = ({ closeMenu }: { closeMenu: () => void }) => (
       <Avatar name="TEST NAME" />
     </MenuButton>
     <MenuList zIndex={99} fontSize={"xl"}>
-      <MenuItem as={RouterLink} to="/user" onClick={closeMenu}>
-        Profile
-      </MenuItem>
       <MenuItem as={RouterLink} to="/schedules" onClick={closeMenu}>
         My Schedules
       </MenuItem>

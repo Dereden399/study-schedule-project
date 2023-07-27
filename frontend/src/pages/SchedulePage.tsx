@@ -11,7 +11,6 @@ import {
   Heading,
   IconButton,
   Link,
-  Stack,
   useDisclosure,
 } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
