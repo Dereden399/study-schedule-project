@@ -13,7 +13,7 @@ import {
   ModalOverlay,
   VStack,
 } from "@chakra-ui/react";
-import { MyFieldProps, Schedule } from "../types";
+import { MyFieldProps, Schedule } from "../../types";
 import { Field, Form, Formik, FormikHelpers } from "formik";
 
 interface InitValuesType {

@@ -9,7 +9,6 @@ import {
   DrawerOverlay,
   Flex,
   Heading,
-  IconButton,
   Link,
   useDisclosure,
 } from "@chakra-ui/react";
@@ -17,13 +16,9 @@ import { useParams } from "react-router-dom";
 import { Link as RouterLink } from "react-router-dom";
 import useAppSelector from "../hooks/useAppSelector";
 import InfoSign from "../components/InfoSign";
-import { SettingsIcon } from "@chakra-ui/icons";
 import CoursesList from "../components/CoursesList";
 import MyCalendar from "../components/Calendar";
-import { useRef, useState } from "react";
-import AddCourseModal from "../components/AddCourseModal";
-import EditCourseModal from "../components/EditCourseModal";
-import { Course } from "../types";
+import { useRef } from "react";
 
 const SchedulePage = () => {
   const id = useParams().id;
@@ -35,33 +30,8 @@ const SchedulePage = () => {
     onOpen: onDrawerOpen,
     onClose: onDrawerClose,
   } = useDisclosure();
-  const {
-    isOpen: isAddModalOpen,
-    onOpen: onAddModalOpen,
-    onClose: onAddModalClose,
-  } = useDisclosure();
-  const {
-    isOpen: isEditModalOpen,
-    onOpen: onEditOpen,
-    onClose: onEditClose,
-  } = useDisclosure();
   const openDrawerBtnRef = useRef<HTMLButtonElement>(null);
-  const [initStartDateForModal, setInitStartDate] = useState<Date | null>(null);
-  const [initEndDateForModal, setInitEndDate] = useState<Date | null>(null);
-  const [courseToEdit, setCourseToEdit] = useState<Course | null>(null);
 
-  const openAddModalWithInit = (start: Date | null, end: Date | null) => {
-    onEditClose();
-    setInitStartDate(start);
-    setInitEndDate(end);
-    onAddModalOpen();
-  };
-
-  const openEditModalFor = (course: Course) => {
-    onAddModalClose();
-    setCourseToEdit(course);
-    onEditOpen();
-  };
   if (!schedule) return <ScheduleNotFound />;
 
   return (
@@ -89,15 +59,9 @@ const SchedulePage = () => {
         </Button>
 
         <Box display={{ base: "none", lg: "flex" }} w="full" maxW="md">
-          <CoursesList
-            onAddModalOpen={openAddModalWithInit}
-            handleEdit={openEditModalFor}
-          />
+          <CoursesList />
         </Box>
-        <MyCalendar
-          openAddCourseModal={openAddModalWithInit}
-          openEditCourseModal={openEditModalFor}
-        />
+        <MyCalendar />
       </Flex>
       <Drawer
         isOpen={isDrawerOpen}
@@ -110,24 +74,10 @@ const SchedulePage = () => {
         <DrawerContent>
           <DrawerCloseButton />
           <DrawerBody>
-            <CoursesList
-              onAddModalOpen={openAddModalWithInit}
-              handleEdit={openEditModalFor}
-            />
+            <CoursesList />
           </DrawerBody>
         </DrawerContent>
       </Drawer>
-      <AddCourseModal
-        isOpen={isAddModalOpen}
-        onClose={onAddModalClose}
-        initStart={initStartDateForModal}
-        initEnd={initEndDateForModal}
-      />
-      <EditCourseModal
-        isOpen={isEditModalOpen}
-        onClose={onEditClose}
-        course={courseToEdit}
-      />
     </Container>
   );
 };

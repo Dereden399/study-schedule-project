@@ -17,8 +17,8 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { Field, Form, Formik, FormikHelpers } from "formik";
-import { DatePicker } from "./DatePicker";
-import { MyFieldProps } from "../types";
+import { DatePicker } from "../DatePicker/DatePicker";
+import { MyFieldProps } from "../../types";
 import { useEffect } from "react";
 
 interface InitValuesType {
@@ -31,14 +31,6 @@ interface InitValuesType {
 
 const nowTime = new Date(Date.now());
 
-const initialValues: InitValuesType = {
-  title: "",
-  start: new Date(nowTime.setHours(0, 0, 0, 0)),
-  end: new Date(nowTime.setHours(1, 0, 0, 0)),
-  info: "",
-  allDay: false,
-};
-
 const AddCourseModal = ({
   isOpen,
   onClose,
@@ -50,12 +42,13 @@ const AddCourseModal = ({
   initStart: Date | null;
   initEnd: Date | null;
 }) => {
-  useEffect(() => {
-    if (initStart) initialValues.start = initStart;
-    else initialValues.start = new Date(nowTime.setHours(0, 0, 0, 0));
-    if (initEnd) initialValues.end = initEnd;
-    else initialValues.end = new Date(nowTime.setHours(1, 0, 0, 0));
-  }, [initEnd, initStart]);
+  const initialValues: InitValuesType = {
+    title: "",
+    start: initStart || new Date(nowTime.setHours(0, 0, 0, 0)),
+    end: initEnd || new Date(nowTime.setHours(1, 0, 0, 0)),
+    info: "",
+    allDay: false,
+  };
 
   const submitHandler = (
     values: InitValuesType,

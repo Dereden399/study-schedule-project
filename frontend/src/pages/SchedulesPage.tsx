@@ -1,7 +1,7 @@
 import { Container, HStack, Heading, Input, VStack } from "@chakra-ui/react";
 import useAppSelector from "../hooks/useAppSelector";
 import InfoSign from "../components/InfoSign";
-import AddSchedulePopover from "../components/AddSchedulePopover";
+import AddSchedulePopover from "../components/ModalsAndOther/AddSchedulePopover";
 import { useEffect, useState } from "react";
 import ScheduleBox from "../components/ScheduleBox";
 import { Schedule } from "../types";

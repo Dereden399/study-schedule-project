@@ -9,7 +9,7 @@ import {
   PopoverTrigger,
   useDisclosure,
 } from "@chakra-ui/react";
-import NewScheduleForm from "./NewScheduleForm";
+import NewScheduleForm from "../NewScheduleForm";
 
 const AddSchedulePopover = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();

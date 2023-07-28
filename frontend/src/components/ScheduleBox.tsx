@@ -19,7 +19,7 @@ import { Link as RouterLink } from "react-router-dom";
 import { Schedule } from "../types";
 import { useRef, useState } from "react";
 import { motion } from "framer-motion";
-import EditScheduleModal from "./EditScheduleModal";
+import EditScheduleModal from "./ModalsAndOther/EditScheduleModal";
 
 const ScheduleBox = ({ schedule }: { schedule: Schedule }) => {
   const [isOpen, setIsOpen] = useState(false);
