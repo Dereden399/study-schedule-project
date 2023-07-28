@@ -1,4 +1,10 @@
 import {
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogOverlay,
   Box,
   Button,
   HStack,
@@ -7,20 +13,30 @@ import {
   Text,
   VStack,
   useColorModeValue,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { Link as RouterLink } from "react-router-dom";
 import { Schedule } from "../types";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { motion } from "framer-motion";
+import EditScheduleModal from "./EditScheduleModal";
 
 const ScheduleBox = ({ schedule }: { schedule: Schedule }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const {
+    isOpen: isAlertOpen,
+    onOpen: onAlertOpen,
+    onClose: onAlertClose,
+  } = useDisclosure();
+  const {
+    isOpen: isModalOpen,
+    onOpen: onModalOpen,
+    onClose: onModalClose,
+  } = useDisclosure();
+  const cancelBtnRef = useRef(null);
 
   const deleteHandler = () => {
-    return null;
-  };
-
-  const editHandler = () => {
+    onAlertClose();
     return null;
   };
 
@@ -39,6 +55,43 @@ const ScheduleBox = ({ schedule }: { schedule: Schedule }) => {
       transition="0.1s ease-in-out"
       shadow={"md"}
     >
+      <AlertDialog
+        size="xl"
+        isOpen={isAlertOpen}
+        onClose={onAlertClose}
+        leastDestructiveRef={cancelBtnRef}
+      >
+        <AlertDialogOverlay>
+          <AlertDialogContent>
+            <AlertDialogHeader fontSize="3xl" fontWeight="bold">
+              Delete Customer
+            </AlertDialogHeader>
+
+            <AlertDialogBody fontSize="xl">
+              Are you sure? You can't undo this action afterwards.
+            </AlertDialogBody>
+
+            <AlertDialogFooter>
+              <Button ref={cancelBtnRef} onClick={onAlertClose} size="lg">
+                Cancel
+              </Button>
+              <Button
+                colorScheme="red"
+                onClick={deleteHandler}
+                ml={3}
+                size="lg"
+              >
+                Delete
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
+      <EditScheduleModal
+        isOpen={isModalOpen}
+        onClose={onModalClose}
+        schedule={schedule}
+      />
       <HStack>
         <VStack w="full" alignItems={"start"}>
           <Heading as="h3" size="xl" noOfLines={1} wordBreak={"break-all"}>
@@ -71,7 +124,7 @@ const ScheduleBox = ({ schedule }: { schedule: Schedule }) => {
               <Button
                 colorScheme="teal"
                 variant={"solid"}
-                onClick={editHandler}
+                onClick={onModalOpen}
                 size={"lg"}
               >
                 Edit
@@ -79,7 +132,7 @@ const ScheduleBox = ({ schedule }: { schedule: Schedule }) => {
               <Button
                 colorScheme="teal"
                 variant={"outline"}
-                onClick={deleteHandler}
+                onClick={onAlertOpen}
                 size={"lg"}
               >
                 Delete

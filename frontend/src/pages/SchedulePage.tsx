@@ -68,7 +68,6 @@ const SchedulePage = () => {
     <Container maxW={"8xl"} pt="5rem">
       <Heading as="h1" size={"xl"}>
         {schedule.name}
-        <IconButton aria-label="Edit schedule" icon={<SettingsIcon />} ms={1} />
       </Heading>
       <Flex
         direction={{ base: "column", lg: "row" }}
