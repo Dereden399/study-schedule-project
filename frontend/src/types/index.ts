@@ -19,6 +19,11 @@ export interface CourseResponse {
   info?: string;
 }
 
+export interface AuthCred {
+  username: string;
+  password: string;
+}
+
 export interface Course {
   id: string;
   title: string;

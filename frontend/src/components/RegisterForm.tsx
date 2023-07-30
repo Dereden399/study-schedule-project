@@ -13,6 +13,7 @@ import {
 import { Field, Form, Formik, FormikHelpers } from "formik";
 import { useState } from "react";
 import { MyFieldProps } from "../types";
+import * as Yup from "yup";
 
 interface InitValuesType {
   username: string;
@@ -23,6 +24,11 @@ const initValues: InitValuesType = {
   username: "",
   password: "",
 };
+
+const validationSchema = Yup.object().shape({
+  username: Yup.string().min(5, "Username must be at least 5 symbols long"),
+  password: Yup.string().min(5, "Password must be at least 5 symbols long"),
+});
 
 const RegisterForm = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -36,7 +42,11 @@ const RegisterForm = () => {
   };
 
   return (
-    <Formik initialValues={initValues} onSubmit={submitHandler}>
+    <Formik
+      initialValues={initValues}
+      onSubmit={submitHandler}
+      validationSchema={validationSchema}
+    >
       {(props) => (
         <Form>
           <VStack spacing={6}>

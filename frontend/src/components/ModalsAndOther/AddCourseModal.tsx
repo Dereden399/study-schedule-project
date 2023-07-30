@@ -19,7 +19,6 @@ import {
 import { Field, Form, Formik, FormikHelpers } from "formik";
 import { DatePicker } from "../DatePicker/DatePicker";
 import { MyFieldProps } from "../../types";
-import { useEffect } from "react";
 
 interface InitValuesType {
   title: string;

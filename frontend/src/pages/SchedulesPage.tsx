@@ -1,10 +1,18 @@
-import { Container, HStack, Heading, Input, VStack } from "@chakra-ui/react";
+import {
+  Container,
+  HStack,
+  Heading,
+  Input,
+  Link,
+  VStack,
+} from "@chakra-ui/react";
 import useAppSelector from "../hooks/useAppSelector";
 import InfoSign from "../components/InfoSign";
 import AddSchedulePopover from "../components/ModalsAndOther/AddSchedulePopover";
 import { useEffect, useState } from "react";
 import ScheduleBox from "../components/ScheduleBox";
 import { Schedule } from "../types";
+import { Link as RouterLink } from "react-router-dom";
 
 const SchedulesPage = () => {
   const [filterText, setFilterText] = useState("");
@@ -21,6 +29,31 @@ const SchedulesPage = () => {
       setFilteredSchedules(schedules);
     }
   }, [filterText, schedules]);
+
+  const user = useAppSelector((state) => state.user.user);
+
+  if (!user)
+    return (
+      <Container mt={"5rem"} maxW={"container.xl"}>
+        <InfoSign
+          iconSize={15}
+          header="This page is packed with your study schedules"
+          info={
+            <>
+              <Link as={RouterLink} to="/auth/login" color={"teal.400"}>
+                Log in
+              </Link>{" "}
+              or{" "}
+              <Link as={RouterLink} to="/auth/register" color={"teal.400"}>
+                Register
+              </Link>{" "}
+              now to access and optimize your study routine
+            </>
+          }
+        />
+      </Container>
+    );
+
   return (
     <Container mt={"5rem"} maxW={"container.xl"}>
       <Heading textAlign={"center"}>Your schedules</Heading>

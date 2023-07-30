@@ -12,26 +12,24 @@ import {
 } from "@chakra-ui/react";
 import { Field, Form, Formik, FormikHelpers } from "formik";
 import { useState } from "react";
-import { MyFieldProps } from "../types";
+import { AuthCred, MyFieldProps } from "../types";
+import useActions from "../hooks/useActions";
 
-interface InitValuesType {
-  username: string;
-  password: string;
-}
-
-const initValues: InitValuesType = {
+const initValues: AuthCred = {
   username: "",
   password: "",
 };
 
 const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const { login } = useActions();
 
   const submitHandler = (
-    values: InitValuesType,
-    actions: FormikHelpers<InitValuesType>
+    values: AuthCred,
+    actions: FormikHelpers<AuthCred>
   ) => {
     console.log(values);
+    login(values);
     actions.setSubmitting(false);
   };
 
@@ -41,7 +39,7 @@ const LoginForm = () => {
         <Form>
           <VStack spacing={6}>
             <Field name="username">
-              {({ field, form }: MyFieldProps<string, InitValuesType>) => (
+              {({ field, form }: MyFieldProps<string, AuthCred>) => (
                 <FormControl
                   isInvalid={
                     form.touched.username && Boolean(form.errors.username)
@@ -59,7 +57,7 @@ const LoginForm = () => {
               )}
             </Field>
             <Field name="password">
-              {({ field, form }: MyFieldProps<string, InitValuesType>) => (
+              {({ field, form }: MyFieldProps<string, AuthCred>) => (
                 <FormControl
                   isInvalid={
                     form.touched.password && Boolean(form.errors.password)

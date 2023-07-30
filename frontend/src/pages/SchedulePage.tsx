@@ -31,6 +31,29 @@ const SchedulePage = () => {
     onClose: onDrawerClose,
   } = useDisclosure();
   const openDrawerBtnRef = useRef<HTMLButtonElement>(null);
+  const user = useAppSelector((state) => state.user.user);
+
+  if (!user)
+    return (
+      <Container mt={"5rem"} maxW={"container.xl"}>
+        <InfoSign
+          iconSize={15}
+          header="This page shows your schedule content"
+          info={
+            <>
+              <Link as={RouterLink} to="/auth/login" color={"teal.400"}>
+                Log in
+              </Link>{" "}
+              or{" "}
+              <Link as={RouterLink} to="/auth/register" color={"teal.400"}>
+                Register
+              </Link>{" "}
+              now to access and optimize your study routine
+            </>
+          }
+        />
+      </Container>
+    );
 
   if (!schedule) return <ScheduleNotFound />;
 
