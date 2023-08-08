@@ -94,9 +94,10 @@ scheduleController.delete("/:id", AuthentificationCheck, (async (req, res) => {
 scheduleController.put("/:id", AuthentificationCheck, (async (req, res) => {
   const finded = await Schedule.findById(req.params.id);
   if (finded) {
-    if (finded.user.toString() !== req.currentUserId)
+    if (finded.user.toString() !== req.currentUserId) {
       res.status(405).json({ error: "can not modify other user's schedules" });
-    else {
+      return;
+    } else {
       const parsedBody = parseSchedule(req.body);
       finded.name = parsedBody.name;
       finded.courses = parsedBody.courses;

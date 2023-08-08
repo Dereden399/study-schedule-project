@@ -1,6 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { AuthCred } from "../../../types";
 import loginService from "../../../services/authService";
+import { AxiosError } from "axios";
 
 export const login = createAsyncThunk(
   "users/login",
@@ -9,8 +10,8 @@ export const login = createAsyncThunk(
       const data = await loginService.login(loginCred);
       return data;
     } catch (error) {
-      if (error instanceof Error) {
-        return rejectWithValue(error.message);
+      if (error instanceof AxiosError) {
+        return rejectWithValue(error.response?.data.error);
       }
     }
   }

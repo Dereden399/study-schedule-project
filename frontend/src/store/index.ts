@@ -10,3 +10,5 @@ export const store = configureStore({
     course: courseReducer,
   },
 });
+
+export type RootState = ReturnType<typeof store.getState>;

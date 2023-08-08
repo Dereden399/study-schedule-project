@@ -4,6 +4,7 @@ import {
   Heading,
   Input,
   Link,
+  Spinner,
   VStack,
 } from "@chakra-ui/react";
 import useAppSelector from "../hooks/useAppSelector";
@@ -13,11 +14,23 @@ import { useEffect, useState } from "react";
 import ScheduleBox from "../components/ScheduleBox";
 import { Schedule } from "../types";
 import { Link as RouterLink } from "react-router-dom";
+import useAppDispatch from "../hooks/useAppDispatch";
+import { getSchedules } from "../store/reducers/actions/getSchedules";
 
 const SchedulesPage = () => {
   const [filterText, setFilterText] = useState("");
   const [filteredSchedules, setFilteredSchedules] = useState<Schedule[]>([]);
-  const schedules = useAppSelector((state) => state.schedule.schedules);
+  const dispatch = useAppDispatch();
+  const { schedules, loading } = useAppSelector((state) => state.schedule);
+  const user = useAppSelector((state) => state.user.user);
+
+  useEffect(() => {
+    if (user) {
+      dispatch(getSchedules(user.id));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   useEffect(() => {
     if (filterText.length >= 3) {
       setFilteredSchedules(
@@ -29,8 +42,6 @@ const SchedulesPage = () => {
       setFilteredSchedules(schedules);
     }
   }, [filterText, schedules]);
-
-  const user = useAppSelector((state) => state.user.user);
 
   if (!user)
     return (
@@ -51,6 +62,12 @@ const SchedulesPage = () => {
             </>
           }
         />
+      </Container>
+    );
+  if (loading)
+    return (
+      <Container mt={"5rem"} maxW={"container.xl"} centerContent>
+        <Spinner size="xl" color="teal" />
       </Container>
     );
 

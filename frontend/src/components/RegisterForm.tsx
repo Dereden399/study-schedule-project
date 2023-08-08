@@ -12,15 +12,13 @@ import {
 } from "@chakra-ui/react";
 import { Field, Form, Formik, FormikHelpers } from "formik";
 import { useState } from "react";
-import { MyFieldProps } from "../types";
+import { AuthCred, MyFieldProps } from "../types";
 import * as Yup from "yup";
+import { useNavigate } from "react-router-dom";
+import { register } from "../store/reducers/actions/register";
+import useAppDispatch from "../hooks/useAppDispatch";
 
-interface InitValuesType {
-  username: string;
-  password: string;
-}
-
-const initValues: InitValuesType = {
+const initValues: AuthCred = {
   username: "",
   password: "",
 };
@@ -32,13 +30,18 @@ const validationSchema = Yup.object().shape({
 
 const RegisterForm = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const dispatch = useAppDispatch();
+  const nav = useNavigate();
 
-  const submitHandler = (
-    values: InitValuesType,
-    actions: FormikHelpers<InitValuesType>
+  const submitHandler = async (
+    values: AuthCred,
+    actions: FormikHelpers<AuthCred>
   ) => {
-    console.log(values);
+    const result = await dispatch(register(values));
     actions.setSubmitting(false);
+    if (result.meta.requestStatus == "fulfilled") {
+      nav("/schedules");
+    }
   };
 
   return (
@@ -51,7 +54,7 @@ const RegisterForm = () => {
         <Form>
           <VStack spacing={6}>
             <Field name="username">
-              {({ field, form }: MyFieldProps<string, InitValuesType>) => (
+              {({ field, form }: MyFieldProps<string, AuthCred>) => (
                 <FormControl
                   isInvalid={
                     form.touched.username && Boolean(form.errors.username)
@@ -69,7 +72,7 @@ const RegisterForm = () => {
               )}
             </Field>
             <Field name="password">
-              {({ field, form }: MyFieldProps<string, InitValuesType>) => (
+              {({ field, form }: MyFieldProps<string, AuthCred>) => (
                 <FormControl
                   isInvalid={
                     form.touched.password && Boolean(form.errors.password)

@@ -8,9 +8,18 @@ import {
 } from "@chakra-ui/react";
 import { Link as RouterLink } from "react-router-dom";
 import useAppSelector from "../../hooks/useAppSelector";
+import useAppDispatch from "../../hooks/useAppDispatch";
+import { removeUser } from "../../store/reducers/userReducer";
 
 const AvatarMenu = ({ closeMenu }: { closeMenu: () => void }) => {
   const user = useAppSelector((state) => state.user.user);
+  const dispatch = useAppDispatch();
+
+  const logout = () => {
+    closeMenu();
+    dispatch(removeUser());
+  };
+
   if (!user) return null;
   return (
     <Menu>
@@ -27,7 +36,7 @@ const AvatarMenu = ({ closeMenu }: { closeMenu: () => void }) => {
         <MenuItem as={RouterLink} to="/schedules" onClick={closeMenu}>
           My Schedules
         </MenuItem>
-        <MenuItem as={RouterLink} to="*" onClick={closeMenu}>
+        <MenuItem as={RouterLink} to="/" onClick={logout}>
           Log out
         </MenuItem>
       </MenuList>

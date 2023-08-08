@@ -16,9 +16,10 @@ loginController.post("/", (async (req, res) => {
     user === null
       ? false
       : await bcrypt.compare(passwordHashBody, user.passwordHash);
-  if (!passwordCorrect)
+  if (!passwordCorrect) {
     res.status(401).json({ error: "Incorrect password or username" });
-
+    return;
+  }
   const userForToken = {
     username: user?.username,
     id: user?._id,

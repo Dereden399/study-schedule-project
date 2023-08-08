@@ -13,7 +13,9 @@ import {
 import { Field, Form, Formik, FormikHelpers } from "formik";
 import { useState } from "react";
 import { AuthCred, MyFieldProps } from "../types";
-import useActions from "../hooks/useActions";
+import useAppDispatch from "../hooks/useAppDispatch";
+import { login } from "../store/reducers/actions/login";
+import { useNavigate } from "react-router-dom";
 
 const initValues: AuthCred = {
   username: "",
@@ -22,15 +24,18 @@ const initValues: AuthCred = {
 
 const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const { login } = useActions();
+  const dispatch = useAppDispatch();
+  const nav = useNavigate();
 
-  const submitHandler = (
+  const submitHandler = async (
     values: AuthCred,
     actions: FormikHelpers<AuthCred>
   ) => {
-    console.log(values);
-    login(values);
+    const result = await dispatch(login(values));
     actions.setSubmitting(false);
+    if (result.meta.requestStatus == "fulfilled") {
+      nav("/schedules");
+    }
   };
 
   return (

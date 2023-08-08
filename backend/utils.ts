@@ -6,8 +6,7 @@ const isString = (text: unknown): text is string => {
 };
 
 export const parseString = (text: unknown): string => {
-  if (!text || !isString(text))
-    throw new Error("error parsing string from body");
+  if (!isString(text)) throw new Error("error parsing string from body");
   return text;
 };
 

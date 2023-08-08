@@ -1,4 +1,4 @@
-import { Box } from "@chakra-ui/react";
+import { Box, createStandaloneToast } from "@chakra-ui/react";
 import { Routes, Route } from "react-router-dom";
 import NavBar from "./components/Navbar";
 import MainPage from "./pages/MainPage";
@@ -7,6 +7,10 @@ import NaNPage from "./pages/NaNPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import SchedulePage from "./pages/SchedulePage";
+
+const { ToastContainer, toast } = createStandaloneToast();
+
+export { toast };
 
 function App() {
   return (
@@ -20,6 +24,7 @@ function App() {
         <Route path="/schedules" element={<SchedulesPage />} />
         <Route path="*" element={<NaNPage />} />
       </Routes>
+      <ToastContainer />
     </Box>
   );
 }

@@ -1,19 +1,20 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { AnyAction, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Schedule } from "../../types";
+import { getSchedules } from "./actions/getSchedules";
+import { toast } from "../../App";
 
 interface ScheduleState {
   schedules: Array<Schedule>;
+  loading: boolean;
 }
 
 const initialState: ScheduleState = {
-  schedules: [
-    { name: "Schedule 1", id: "1" },
-    {
-      name: "Wow so intersting",
-      id: "2",
-      description: "description here...",
-    },
-  ],
+  schedules: [],
+  loading: false,
+};
+
+const isRejectedAction = (action: AnyAction) => {
+  return action.type.endsWith("rejected");
 };
 
 export const scheduleReducer = createSlice({
@@ -33,6 +34,28 @@ export const scheduleReducer = createSlice({
       state.schedules.filter((x) => x.id != action.payload.id);
     },
   },
+  extraReducers: (builder) =>
+    builder
+      .addCase(getSchedules.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getSchedules.fulfilled, (state, action) => {
+        state.loading = false;
+        if (!action.payload) return;
+        state.schedules = action.payload;
+      })
+      .addMatcher(isRejectedAction, (state, action: PayloadAction<string>) => {
+        state.loading = false;
+        console.log(action.payload);
+        toast({
+          title: "Error",
+          description: action.payload,
+          duration: 3000,
+          isClosable: true,
+          status: "error",
+          position: "top",
+        });
+      }),
 });
 
 export default scheduleReducer.reducer;

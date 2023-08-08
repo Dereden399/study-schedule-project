@@ -10,10 +10,12 @@ const userController = express.Router();
 userController.post("/", (async (req, res) => {
   const username = parseString(req.body.username);
   const password = parseString(req.body.password);
-  if (username.length < 5 || password.length < 5)
+  if (username.length < 5 || password.length < 5) {
     res
       .status(400)
-      .json({ error: "username and password must be at least 5 letters long" });
+      .json({ error: "Username and password must be at least 5 letters long" });
+    return;
+  }
 
   const passwordHash = await bcrypt.hash(password, 10);
   const user = new User({
@@ -69,9 +71,10 @@ userController.put("/:id", AuthentificationCheck, (async (req, res) => {
   const newSchedules = parseSchedules(req.body);
   const user = await User.findById(req.params.id);
   if (user) {
-    if (user._id.toString() !== req.currentUserId)
+    if (user._id.toString() !== req.currentUserId) {
       res.status(405).json({ error: "can not modify other user's account" });
-    else {
+      return;
+    } else {
       user.schedules = newSchedules;
       const result = await user.save();
       res.status(200).json(result.toJSON());
