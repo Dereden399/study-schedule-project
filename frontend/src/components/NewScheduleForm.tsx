@@ -33,7 +33,6 @@ const NewScheduleForm = ({ onClose }: { onClose: () => void }) => {
     values: InitValuesType,
     action: FormikHelpers<InitValuesType>
   ) => {
-    console.log(values);
     const result = await dispatch(addSchedule(values));
     action.setSubmitting(false);
     if (result.meta.requestStatus == "fulfilled") {

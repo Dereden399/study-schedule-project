@@ -17,4 +17,32 @@ const addSchedule = async (schedule: Omit<Schedule, "id">, token: string) => {
   return response.data;
 };
 
-export default { getSchedulesForUser, addSchedule };
+const deleteSchedule = async (id: string, token: string) => {
+  const config: AxiosRequestConfig = {
+    headers: {
+      Authorization: "bearer " + token,
+    },
+  };
+  await axios.delete(`/schedules/${id}`, config);
+};
+
+const editSchedule = async (editedSchedule: Schedule, token: string) => {
+  const config: AxiosRequestConfig = {
+    headers: {
+      Authorization: "bearer " + token,
+    },
+  };
+  const response = await axios.put<Schedule>(
+    `/schedules/${editedSchedule.id}`,
+    editedSchedule,
+    config
+  );
+  return response.data;
+};
+
+export default {
+  getSchedulesForUser,
+  addSchedule,
+  deleteSchedule,
+  editSchedule,
+};

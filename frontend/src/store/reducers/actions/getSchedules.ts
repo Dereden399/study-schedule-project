@@ -10,7 +10,7 @@ export const getSchedules = createAsyncThunk(
       return schedules;
     } catch (error) {
       if (error instanceof AxiosError)
-        return rejectWithValue(error.response?.data.message);
+        return rejectWithValue(error.response?.data.error);
     }
   }
 );

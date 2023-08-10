@@ -20,6 +20,8 @@ import { Schedule } from "../types";
 import { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import EditScheduleModal from "./ModalsAndOther/EditScheduleModal";
+import useAppDispatch from "../hooks/useAppDispatch";
+import deleteSchedule from "../store/reducers/actions/deleteSchedule";
 
 const ScheduleBox = ({ schedule }: { schedule: Schedule }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -34,10 +36,11 @@ const ScheduleBox = ({ schedule }: { schedule: Schedule }) => {
     onClose: onModalClose,
   } = useDisclosure();
   const cancelBtnRef = useRef(null);
+  const dispatch = useAppDispatch();
 
-  const deleteHandler = () => {
+  const deleteHandler = async () => {
+    await dispatch(deleteSchedule(schedule.id));
     onAlertClose();
-    return null;
   };
 
   return (
@@ -98,17 +101,35 @@ const ScheduleBox = ({ schedule }: { schedule: Schedule }) => {
             {schedule.name}
           </Heading>
           {isOpen && (
-            <Text
+            <Box
+              maxH="7rem"
+              overflowX={"hidden"}
+              w="full"
               ms="1"
-              fontSize="xl"
-              wordBreak={"break-all"}
-              overflow={"scroll"}
-              maxH={"7rem"}
+              overflowY={"scroll"}
+              sx={{
+                "&::-webkit-scrollbar": {
+                  width: "10px",
+                },
+                "&::-webkit-scrollbar-track": {
+                  background: "transparent",
+                },
+                "&::-webkit-scrollbar-thumb": {
+                  borderRadius: "100px",
+                  background: "teal",
+                },
+              }}
             >
-              {schedule.description
-                ? schedule.description
-                : "No description provided..."}
-            </Text>
+              <Text
+                fontSize="xl"
+                wordBreak={"break-all"}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {schedule.description
+                  ? schedule.description
+                  : "No description provided..."}
+              </Text>
+            </Box>
           )}
         </VStack>
         <VStack onClick={(e) => e.stopPropagation()}>

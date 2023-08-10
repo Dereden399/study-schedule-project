@@ -10,7 +10,7 @@ const checkToken = createAsyncThunk(
       return user;
     } catch (error) {
       if (error instanceof AxiosError) {
-        return rejectWithValue(error.response?.data.message);
+        return rejectWithValue(error.response?.data.error);
       }
     }
   }

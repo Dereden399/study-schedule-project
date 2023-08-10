@@ -15,11 +15,18 @@ import {
 } from "@chakra-ui/react";
 import { MyFieldProps, Schedule } from "../../types";
 import { Field, Form, Formik, FormikHelpers } from "formik";
+import useAppDispatch from "../../hooks/useAppDispatch";
+import * as Yup from "yup";
+import editSchedule from "../../store/reducers/actions/editSchedule";
 
 interface InitValuesType {
   name: string;
   description: string;
 }
+
+const validationSchema = Yup.object().shape({
+  name: Yup.string().required("Name is required"),
+});
 
 const EditScheduleModal = ({
   isOpen,
@@ -30,18 +37,27 @@ const EditScheduleModal = ({
   onClose: () => void;
   schedule: Schedule;
 }) => {
+  const dispatch = useAppDispatch();
+
   const initialValues: InitValuesType = {
     name: schedule.name,
     description: schedule.description || "",
   };
 
-  const submitHandler = (
+  const submitHandler = async (
     values: InitValuesType,
     action: FormikHelpers<InitValuesType>
   ) => {
-    console.log(values);
+    const editedSchedule = {
+      ...schedule,
+      name: values.name,
+      description: values.description,
+    };
+    const result = await dispatch(editSchedule(editedSchedule));
     action.setSubmitting(false);
-    onClose();
+    if (result.meta.requestStatus == "fulfilled") {
+      onClose();
+    }
   };
 
   return (
@@ -55,7 +71,11 @@ const EditScheduleModal = ({
       <ModalContent>
         <ModalHeader fontSize={"xl"}>{schedule.name}</ModalHeader>
         <ModalCloseButton />
-        <Formik initialValues={initialValues} onSubmit={submitHandler}>
+        <Formik
+          initialValues={initialValues}
+          onSubmit={submitHandler}
+          validationSchema={validationSchema}
+        >
           {(props) => (
             <Form>
               <ModalBody>

@@ -1,19 +1,19 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { Schedule } from "../../../types";
 import { AxiosError } from "axios";
 import scheduleService from "../../../services/scheduleService";
 import { RootState } from "../..";
+import { Schedule } from "../../../types";
 
-const addSchedule = createAsyncThunk(
-  "schedules/add",
-  async (schedule: Omit<Schedule, "id">, { rejectWithValue, getState }) => {
+const editSchedule = createAsyncThunk(
+  "schedules/edit",
+  async (editedSchedule: Schedule, { rejectWithValue, getState }) => {
     try {
       const state = getState() as RootState;
-      const data = await scheduleService.addSchedule(
-        schedule,
+      const result = await scheduleService.editSchedule(
+        editedSchedule,
         state.user.token
       );
-      return data;
+      return result;
     } catch (error) {
       if (error instanceof AxiosError)
         return rejectWithValue(error.response?.data.error);
@@ -21,4 +21,4 @@ const addSchedule = createAsyncThunk(
   }
 );
 
-export default addSchedule;
+export default editSchedule;

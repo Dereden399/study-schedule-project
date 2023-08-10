@@ -3,6 +3,8 @@ import { Schedule } from "../../types";
 import { getSchedules } from "./actions/getSchedules";
 import { toast } from "../../App";
 import addSchedule from "./actions/addSchedule";
+import deleteSchedule from "./actions/deleteSchedule";
+import editSchedule from "./actions/editSchedule";
 
 interface ScheduleState {
   schedules: Array<Schedule>;
@@ -32,7 +34,9 @@ export const scheduleReducer = createSlice({
       state.schedules.push(action.payload);
     },
     removeSchedule: (state, action: PayloadAction<{ id: string }>) => {
-      state.schedules.filter((x) => x.id != action.payload.id);
+      state.schedules = state.schedules.filter(
+        (x) => x.id != action.payload.id
+      );
     },
   },
   extraReducers: (builder) =>
@@ -49,9 +53,18 @@ export const scheduleReducer = createSlice({
         if (!action.payload) return;
         state.schedules.push(action.payload);
       })
+      .addCase(deleteSchedule.fulfilled, (state, action) => {
+        if (!action.payload) return;
+        state.schedules = state.schedules.filter((x) => x.id != action.payload);
+      })
+      .addCase(editSchedule.fulfilled, (state, action) => {
+        if (!action.payload) return;
+        state.schedules = state.schedules.map((x) =>
+          x.id === action.payload?.id ? action.payload : x
+        );
+      })
       .addMatcher(isRejectedAction, (state, action: PayloadAction<string>) => {
         state.loading = false;
-        console.log(action.type);
         toast({
           title: "Error",
           description: action.payload,
