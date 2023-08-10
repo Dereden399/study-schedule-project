@@ -2,6 +2,7 @@ import { AnyAction, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Schedule } from "../../types";
 import { getSchedules } from "./actions/getSchedules";
 import { toast } from "../../App";
+import addSchedule from "./actions/addSchedule";
 
 interface ScheduleState {
   schedules: Array<Schedule>;
@@ -14,7 +15,7 @@ const initialState: ScheduleState = {
 };
 
 const isRejectedAction = (action: AnyAction) => {
-  return action.type.endsWith("rejected");
+  return action.type.endsWith("rejected") && action.type.includes("schedules");
 };
 
 export const scheduleReducer = createSlice({
@@ -44,9 +45,13 @@ export const scheduleReducer = createSlice({
         if (!action.payload) return;
         state.schedules = action.payload;
       })
+      .addCase(addSchedule.fulfilled, (state, action) => {
+        if (!action.payload) return;
+        state.schedules.push(action.payload);
+      })
       .addMatcher(isRejectedAction, (state, action: PayloadAction<string>) => {
         state.loading = false;
-        console.log(action.payload);
+        console.log(action.type);
         toast({
           title: "Error",
           description: action.payload,

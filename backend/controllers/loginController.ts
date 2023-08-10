@@ -30,4 +30,16 @@ loginController.post("/", (async (req, res) => {
     .json({ token: token, username: user?.username, id: user?._id });
 }) as RequestHandler);
 
+loginController.post("/check", (async (req, res) => {
+  const token = parseString(req.body.token);
+  const decodedToken = jwt.verify(token || "invalid_token", SECRET) as {
+    username: string;
+    id: string;
+  };
+  const user = await User.findById(decodedToken.id);
+  if (user) {
+    res.status(200).json(decodedToken);
+  } else throw new Error("invalid token");
+}) as RequestHandler);
+
 export default loginController;

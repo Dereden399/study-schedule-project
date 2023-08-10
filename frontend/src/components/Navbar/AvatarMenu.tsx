@@ -18,6 +18,8 @@ const AvatarMenu = ({ closeMenu }: { closeMenu: () => void }) => {
   const logout = () => {
     closeMenu();
     dispatch(removeUser());
+    // add localstorge remove
+    localStorage.removeItem("token");
   };
 
   if (!user) return null;

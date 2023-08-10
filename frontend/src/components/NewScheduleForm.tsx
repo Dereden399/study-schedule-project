@@ -8,7 +8,10 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { FormikHelpers, Formik, Form, Field } from "formik";
+import * as Yup from "yup";
 import { MyFieldProps } from "../types";
+import useAppDispatch from "../hooks/useAppDispatch";
+import addSchedule from "../store/reducers/actions/addSchedule";
 
 interface InitValuesType {
   name: string;
@@ -20,17 +23,29 @@ const initialValues: InitValuesType = {
   description: "",
 };
 
+const validationSchema = Yup.object().shape({
+  name: Yup.string().required("Name is required"),
+});
+
 const NewScheduleForm = ({ onClose }: { onClose: () => void }) => {
-  const submitHandler = (
+  const dispatch = useAppDispatch();
+  const submitHandler = async (
     values: InitValuesType,
     action: FormikHelpers<InitValuesType>
   ) => {
     console.log(values);
+    const result = await dispatch(addSchedule(values));
     action.setSubmitting(false);
-    onClose();
+    if (result.meta.requestStatus == "fulfilled") {
+      onClose();
+    }
   };
   return (
-    <Formik initialValues={initialValues} onSubmit={submitHandler}>
+    <Formik
+      initialValues={initialValues}
+      onSubmit={submitHandler}
+      validationSchema={validationSchema}
+    >
       {(props) => (
         <Form>
           <VStack spacing={6}>

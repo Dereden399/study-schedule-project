@@ -29,7 +29,7 @@ const SchedulesPage = () => {
       dispatch(getSchedules(user.id));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     if (filterText.length >= 3) {

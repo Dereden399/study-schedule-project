@@ -4,6 +4,7 @@ import { AuthentificationCheck } from "../middlewares";
 import Course from "../models/course";
 import Schedule from "../models/schedule";
 import { parseCourse, parseSchedule } from "../utils";
+import User from "../models/User";
 
 const scheduleController = express.Router();
 
@@ -49,6 +50,11 @@ scheduleController.post("/", AuthentificationCheck, (async (req, res) => {
   const scheduleFromBody = parseSchedule(req.body);
   const toPost = new Schedule({ ...scheduleFromBody, user: req.currentUserId });
   const result = await toPost.save();
+  const user = await User.findById(req.currentUserId);
+  if (!user)
+    throw new Error("Something went wrong with adding a schedule to user");
+  user.schedules.push(result._id);
+  await user.save();
   res.status(201).json(result.toJSON());
 }) as RequestHandler);
 

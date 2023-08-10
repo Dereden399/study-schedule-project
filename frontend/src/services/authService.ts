@@ -22,4 +22,12 @@ const register = async (cred: AuthCred) => {
   return response.data;
 };
 
-export default { login, register };
+const check = async (token: string) => {
+  const response = await axios.post<{ username: string; id: string }>(
+    "/login/check",
+    { token: token }
+  );
+  return { ...response.data, token: token } as LoginResponse;
+};
+
+export default { login, register, check };

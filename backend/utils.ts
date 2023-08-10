@@ -21,7 +21,7 @@ const parseId = (id: unknown): mongoose.Types.ObjectId => {
 };
 
 const parseCourses = (courses: unknown): mongoose.Types.ObjectId[] => {
-  if (!courses) throw new Error("courses missing");
+  if (!courses) return [];
   if (!Array.isArray(courses)) throw new Error("incorect courses array");
   return courses.map((x) => parseId(x));
 };

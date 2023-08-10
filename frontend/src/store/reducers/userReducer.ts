@@ -1,8 +1,8 @@
 import { AnyAction, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { User } from "../../types";
 import { login } from "./actions/login";
-import { register } from "./actions/register";
 import { toast } from "../../App";
+import checkToken from "./actions/checkToken";
 
 interface UserState {
   user: User | null;
@@ -17,7 +17,15 @@ const initialState: UserState = {
 };
 
 const isRejectedAction = (action: AnyAction) => {
-  return action.type.endsWith("rejected");
+  return (
+    action.type.endsWith("rejected") &&
+    action.type.includes("users") &&
+    !action.type.includes("checkToken")
+  );
+};
+
+const isPendingAction = (action: AnyAction) => {
+  return action.type.endsWith("pending");
 };
 
 export const userReducer = createSlice({
@@ -35,9 +43,6 @@ export const userReducer = createSlice({
   },
   extraReducers: (builder) =>
     builder
-      .addCase(login.pending, (state) => {
-        state.loading = true;
-      })
       .addCase(login.fulfilled, (state, action) => {
         if (!action.payload) return;
         state.loading = false;
@@ -47,13 +52,25 @@ export const userReducer = createSlice({
           username: action.payload.username,
           id: action.payload.id,
         };
+        localStorage.setItem("token", action.payload.token);
       })
-      .addCase(register.pending, (state) => {
-        state.loading = true;
+      .addCase(checkToken.fulfilled, (state, action) => {
+        if (!action.payload) return;
+        state.loading = false;
+        state.token = action.payload.token;
+        state.user = {
+          username: action.payload.username,
+          id: action.payload.id,
+        };
+      })
+      .addCase(checkToken.rejected, (state) => {
+        state.loading = false;
+        state.token = "";
+        state.user = null;
+        localStorage.removeItem("token");
       })
       .addMatcher(isRejectedAction, (state, action: PayloadAction<string>) => {
         state.loading = false;
-        console.log(action.payload);
         toast({
           title: "Error",
           description: action.payload,
@@ -62,6 +79,9 @@ export const userReducer = createSlice({
           status: "error",
           position: "top",
         });
+      })
+      .addMatcher(isPendingAction, (state) => {
+        state.loading = true;
       }),
 });
 

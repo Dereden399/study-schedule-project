@@ -3,7 +3,7 @@ import { AxiosError } from "axios";
 import scheduleService from "../../../services/scheduleService";
 
 export const getSchedules = createAsyncThunk(
-  "schedules",
+  "schedules/get",
   async (userId: string, { rejectWithValue }) => {
     try {
       const schedules = await scheduleService.getSchedulesForUser(userId);

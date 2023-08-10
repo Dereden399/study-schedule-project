@@ -7,12 +7,28 @@ import NaNPage from "./pages/NaNPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import SchedulePage from "./pages/SchedulePage";
+import { useEffect } from "react";
+import useAppDispatch from "./hooks/useAppDispatch";
+import checkToken from "./store/reducers/actions/checkToken";
+import useAppSelector from "./hooks/useAppSelector";
 
 const { ToastContainer, toast } = createStandaloneToast();
 
+// eslint-disable-next-line react-refresh/only-export-components
 export { toast };
 
 function App() {
+  const dispatch = useAppDispatch();
+  const user = useAppSelector((state) => state.user.user);
+  useEffect(() => {
+    if (!user) {
+      const token = localStorage.getItem("token");
+      if (token) {
+        dispatch(checkToken(token));
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   return (
     <Box>
       <NavBar />
