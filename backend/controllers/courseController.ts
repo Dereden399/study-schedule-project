@@ -50,9 +50,10 @@ courseController.put("/:id", AuthentificationCheck, (async (req, res) => {
       res.status(405).json({ error: "can not modify other user's courses" });
     } else {
       const parsedBodyCourse = parseCourse(req.body);
-      findedCourse.name = parsedBodyCourse.name;
-      findedCourse.startDate = parsedBodyCourse.startDate;
-      findedCourse.endDate = parsedBodyCourse.endDate;
+      findedCourse.title = parsedBodyCourse.title;
+      findedCourse.start = parsedBodyCourse.start;
+      findedCourse.end = parsedBodyCourse.end;
+      findedCourse.allDay = parsedBodyCourse.allDay;
       if (parsedBodyCourse.info) findedCourse.info = parsedBodyCourse.info;
       const updatedBlog = await findedCourse.save();
       res.status(200).json(updatedBlog.toJSON());

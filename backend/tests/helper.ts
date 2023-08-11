@@ -20,15 +20,17 @@ export const initialSchedules: Omit<ISchedule, "user">[] = [
 
 export const initialCourses: Omit<ICourse, "user">[] = [
   {
-    name: "Saksa 1",
-    startDate: new Date("2022-12-12"),
-    endDate: new Date("2022-12-15"),
+    title: "Saksa 1",
+    start: new Date("2022-12-12"),
+    end: new Date("2022-12-15"),
+    allDay: false,
   },
   {
-    name: "Saksa 8",
-    startDate: new Date("2023-01-10"),
-    endDate: new Date("2023-02-01"),
+    title: "Saksa 8",
+    start: new Date("2023-01-10"),
+    end: new Date("2023-02-01"),
     info: "very hard course",
+    allDay: false,
   },
 ];
 

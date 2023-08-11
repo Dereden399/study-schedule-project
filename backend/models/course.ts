@@ -3,19 +3,23 @@ import { model, Schema } from "mongoose";
 import { ICourse } from "../types";
 
 const courseSchema = new Schema<ICourse>({
-  name: {
+  title: {
     type: String,
     required: true,
   },
-  startDate: {
+  start: {
     type: Schema.Types.Date,
     required: true,
   },
-  endDate: {
+  end: {
     type: Schema.Types.Date,
     required: true,
   },
   info: String,
+  allDay: {
+    type: Schema.Types.Boolean,
+    required: true,
+  },
   user: { type: Schema.Types.ObjectId, ref: "User" },
 });
 

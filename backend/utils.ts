@@ -5,6 +5,15 @@ const isString = (text: unknown): text is string => {
   return typeof text === "string" || text instanceof String;
 };
 
+const isBoolean = (text: unknown): text is boolean => {
+  return typeof text === "boolean" || text instanceof Boolean;
+};
+
+const parseBoolean = (text: unknown): boolean => {
+  if (!isBoolean(text)) throw new Error("error parsing boolean from the body");
+  return text;
+};
+
 export const parseString = (text: unknown): string => {
   if (!isString(text)) throw new Error("error parsing string from body");
   return text;
@@ -29,9 +38,10 @@ const parseCourses = (courses: unknown): mongoose.Types.ObjectId[] => {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const parseCourse = (body: any): Omit<ICourse, "user"> => {
   const base = {
-    name: parseString(body.name),
-    startDate: parseDate(body.startDate),
-    endDate: parseDate(body.endDate),
+    title: parseString(body.name),
+    start: parseDate(body.startDate),
+    end: parseDate(body.endDate),
+    allDay: parseBoolean(body.allDay),
   };
   if (body.info) return { ...base, info: parseString(body.info) };
   else return base;

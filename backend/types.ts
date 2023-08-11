@@ -1,10 +1,11 @@
 import mongoose from "mongoose";
 
 export interface ICourse {
-  name: string;
-  startDate: Date;
-  endDate: Date;
+  title: string;
+  start: Date;
+  end: Date;
   info?: string;
+  allDay: boolean;
   user: mongoose.Types.ObjectId;
 }
 
