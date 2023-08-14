@@ -38,9 +38,9 @@ const parseCourses = (courses: unknown): mongoose.Types.ObjectId[] => {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const parseCourse = (body: any): Omit<ICourse, "user"> => {
   const base = {
-    title: parseString(body.name),
-    start: parseDate(body.startDate),
-    end: parseDate(body.endDate),
+    title: parseString(body.title),
+    start: parseDate(body.start),
+    end: parseDate(body.end),
     allDay: parseBoolean(body.allDay),
   };
   if (body.info) return { ...base, info: parseString(body.info) };

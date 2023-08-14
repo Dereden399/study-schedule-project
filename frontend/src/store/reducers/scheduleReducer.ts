@@ -52,10 +52,26 @@ export const scheduleReducer = createSlice({
       .addCase(addSchedule.fulfilled, (state, action) => {
         if (!action.payload) return;
         state.schedules.push(action.payload);
+        toast({
+          title: "Success",
+          description: "New schedule added",
+          duration: 3000,
+          isClosable: true,
+          status: "success",
+          position: "top",
+        });
       })
       .addCase(deleteSchedule.fulfilled, (state, action) => {
         if (!action.payload) return;
         state.schedules = state.schedules.filter((x) => x.id != action.payload);
+        toast({
+          title: "Success",
+          description: "Deleted schedule",
+          duration: 3000,
+          isClosable: true,
+          status: "success",
+          position: "top",
+        });
       })
       .addCase(editSchedule.fulfilled, (state, action) => {
         if (!action.payload) return;

@@ -17,8 +17,12 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { Field, Form, Formik, FormikHelpers } from "formik";
+import * as Yup from "yup";
 import { DatePicker } from "../DatePicker/DatePicker";
 import { MyFieldProps } from "../../types";
+import useAppDispatch from "../../hooks/useAppDispatch";
+import addCourse from "../../store/reducers/actions/addCourse";
+import { useParams } from "react-router-dom";
 
 interface InitValuesType {
   title: string;
@@ -27,6 +31,10 @@ interface InitValuesType {
   info: string;
   allDay: boolean;
 }
+
+const validationSchema = Yup.object().shape({
+  title: Yup.string().required("Name is required"),
+});
 
 const nowTime = new Date(Date.now());
 
@@ -41,6 +49,8 @@ const AddCourseModal = ({
   initStart: Date | null;
   initEnd: Date | null;
 }) => {
+  const dispatch = useAppDispatch();
+  const id = useParams().id;
   const initialValues: InitValuesType = {
     title: "",
     start: initStart || new Date(nowTime.setHours(0, 0, 0, 0)),
@@ -49,13 +59,22 @@ const AddCourseModal = ({
     allDay: false,
   };
 
-  const submitHandler = (
+  const submitHandler = async (
     values: InitValuesType,
     action: FormikHelpers<InitValuesType>
   ) => {
-    console.log(values);
+    const result = await dispatch(
+      addCourse({
+        course: {
+          ...values,
+          start: values.start.toISOString(),
+          end: values.end.toISOString(),
+        },
+        scheduleId: id || "-",
+      })
+    );
     action.setSubmitting(false);
-    onClose();
+    if (result.meta.requestStatus === "fulfilled") onClose();
   };
 
   return (
@@ -70,7 +89,11 @@ const AddCourseModal = ({
         <ModalHeader fontSize={"xl"}>Add Course</ModalHeader>
         <ModalCloseButton />
 
-        <Formik initialValues={initialValues} onSubmit={submitHandler}>
+        <Formik
+          initialValues={initialValues}
+          onSubmit={submitHandler}
+          validationSchema={validationSchema}
+        >
           {(props) => (
             <Form>
               <ModalBody>

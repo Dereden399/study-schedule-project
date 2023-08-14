@@ -10,9 +10,9 @@ import {
   Button,
 } from "@chakra-ui/react";
 import { ToolbarProps, View, Navigate } from "react-big-calendar";
-import { Course } from "../../types";
+import { CalendarEvent } from "../../types";
 
-const CustomToolbar = (props: ToolbarProps<Course, object>) => {
+const CustomToolbar = (props: ToolbarProps<CalendarEvent, object>) => {
   return (
     <Flex
       direction={{ base: "column-reverse", md: "row" }}

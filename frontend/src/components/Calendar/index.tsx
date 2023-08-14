@@ -9,7 +9,7 @@ import {
 } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import useAppSelector from "../../hooks/useAppSelector";
-import { Course } from "../../types";
+import { CalendarEvent } from "../../types";
 import { useCallback, useMemo, useState } from "react";
 import { ClassNames } from "@emotion/react";
 import AddCourseModal from "../ModalsAndOther/AddCourseModal";
@@ -23,10 +23,24 @@ const localizer = luxonLocalizer(DateTime);
 const MyCalendar = () => {
   const styles = useCalendarStyles();
   const courses = useAppSelector((state) => state.course.courses);
-  const views = useMemo<ViewsProps<Course, object>>(() => {
+  const events = useMemo<CalendarEvent[]>(
+    () =>
+      courses.map((x) => {
+        return {
+          title: x.title,
+          info: x.info,
+          allDay: x.allDay,
+          start: new Date(x.start),
+          end: new Date(x.end),
+          id: x.id,
+        };
+      }),
+    [courses]
+  );
+  const views = useMemo<ViewsProps<CalendarEvent, object>>(() => {
     return { month: true, week: true, day: true };
   }, []);
-  const components = useMemo<Components<Course, object>>(
+  const components = useMemo<Components<CalendarEvent, object>>(
     () => ({
       toolbar: CustomToolbar,
       month: { header: CustomHeader },
@@ -47,10 +61,10 @@ const MyCalendar = () => {
   } = useDisclosure();
   const [initStartDateForModal, setInitStartDate] = useState<Date | null>(null);
   const [initEndDateForModal, setInitEndDate] = useState<Date | null>(null);
-  const [courseToEdit, setCourseToEdit] = useState<Course | null>(null);
+  const [courseToEdit, setCourseToEdit] = useState<CalendarEvent | null>(null);
 
   const handleSelectEvent = useCallback(
-    (event: Course) => {
+    (event: CalendarEvent) => {
       setCourseToEdit(event);
       onEditOpen();
     },
@@ -85,7 +99,7 @@ const MyCalendar = () => {
             <Calendar
               className={css(styles)}
               localizer={localizer}
-              events={courses}
+              events={events}
               popup
               selectable
               onSelectEvent={handleSelectEvent}

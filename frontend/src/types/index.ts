@@ -27,6 +27,15 @@ export interface AuthCred {
 export interface Course {
   id: string;
   title: string;
+  start: string;
+  end: string;
+  allDay: boolean;
+  info?: string;
+}
+
+export interface CalendarEvent {
+  id: string;
+  title: string;
   start: Date;
   end: Date;
   allDay: boolean;

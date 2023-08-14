@@ -14,7 +14,15 @@ const CourseBox = ({ course }: { course: Course }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <>
-      <EditCourseModal isOpen={isOpen} onClose={onClose} course={course} />
+      <EditCourseModal
+        isOpen={isOpen}
+        onClose={onClose}
+        course={{
+          ...course,
+          start: new Date(course.start),
+          end: new Date(course.end),
+        }}
+      />
       <Box
         bg={useColorModeValue("gray.200", "gray.700")}
         px="2"

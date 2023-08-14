@@ -67,7 +67,7 @@ const ScheduleBox = ({ schedule }: { schedule: Schedule }) => {
         <AlertDialogOverlay>
           <AlertDialogContent>
             <AlertDialogHeader fontSize="3xl" fontWeight="bold">
-              Delete Customer
+              Delete Schedule
             </AlertDialogHeader>
 
             <AlertDialogBody fontSize="xl">

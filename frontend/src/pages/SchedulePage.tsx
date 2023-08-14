@@ -18,10 +18,14 @@ import useAppSelector from "../hooks/useAppSelector";
 import InfoSign from "../components/InfoSign";
 import CoursesList from "../components/CoursesList";
 import MyCalendar from "../components/Calendar";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
+import useAppDispatch from "../hooks/useAppDispatch";
+import getCourses from "../store/reducers/actions/getCourses";
+import { getSchedules } from "../store/reducers/actions/getSchedules";
 
 const SchedulePage = () => {
   const id = useParams().id;
+  const dispatch = useAppDispatch();
   const schedule = useAppSelector((state) =>
     state.schedule.schedules.find((x) => x.id == id)
   );
@@ -32,6 +36,15 @@ const SchedulePage = () => {
   } = useDisclosure();
   const openDrawerBtnRef = useRef<HTMLButtonElement>(null);
   const user = useAppSelector((state) => state.user.user);
+  useEffect(() => {
+    if (user) {
+      dispatch(getSchedules(user.id));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
+  useEffect(() => {
+    if (typeof id !== "undefined") dispatch(getCourses(id));
+  });
 
   if (!user)
     return (

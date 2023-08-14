@@ -49,7 +49,7 @@ userController.get("/:id/schedules", (async (req, res) => {
   const user = await User.findById(req.params.id).populate({
     path: "schedules",
     select: "name description courses",
-    populate: { path: "courses", select: "name startDate endDate info" },
+    populate: { path: "courses", select: "title start end info allDay" },
   });
   if (user) {
     res.status(200).json(user.schedules.map((x) => x.toJSON()));

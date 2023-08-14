@@ -10,20 +10,22 @@ const scheduleController = express.Router();
 
 scheduleController.get("/all", (async (_req, res) => {
   const allSchedules = await Schedule.find({}).populate("courses", {
-    name: 1,
-    startDate: 1,
-    endDate: 1,
+    title: 1,
+    start: 1,
+    end: 1,
     info: 1,
+    allDay: 1,
   });
   res.status(200).json(allSchedules.map((x) => x.toJSON()));
 }) as RequestHandler);
 
 scheduleController.get("/:id", (async (req, res) => {
   const finded = await Schedule.findById(req.params.id).populate("courses", {
-    name: 1,
-    startDate: 1,
-    endDate: 1,
+    title: 1,
+    start: 1,
+    end: 1,
     info: 1,
+    allDay: 1,
   });
   if (finded) {
     res.status(200).json(finded.toJSON());
@@ -34,10 +36,11 @@ scheduleController.get("/:id", (async (req, res) => {
 
 scheduleController.get("/:id/courses", (async (req, res) => {
   const finded = await Schedule.findById(req.params.id).populate("courses", {
-    name: 1,
-    startDate: 1,
-    endDate: 1,
+    title: 1,
+    start: 1,
+    end: 1,
     info: 1,
+    allDay: 1,
   });
   if (finded) {
     res.status(200).json(finded.courses);
@@ -69,16 +72,9 @@ scheduleController.post("/:id/addCourse", AuthentificationCheck, (async (
       ...courseFromBody,
       user: new mongoose.Types.ObjectId(req.currentUserId),
     });
-    await courseToSave.save();
+    const result = await courseToSave.save();
     finded.courses = [...finded.courses, courseToSave._id];
-    const result = await (
-      await finded.save()
-    ).populate("courses", {
-      name: 1,
-      startDate: 1,
-      endDate: 1,
-      info: 1,
-    });
+    await finded.save();
     res.status(201).json(result.toJSON());
   } else {
     res.status(404).end();
@@ -111,10 +107,11 @@ scheduleController.put("/:id", AuthentificationCheck, (async (req, res) => {
       const result = await (
         await finded.save()
       ).populate("courses", {
-        name: 1,
-        startDate: 1,
-        endDate: 1,
+        title: 1,
+        start: 1,
+        end: 1,
         info: 1,
+        allDay: 1,
       });
       res.status(200).json(result.toJSON());
     }
