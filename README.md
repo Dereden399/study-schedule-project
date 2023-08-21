@@ -2,6 +2,20 @@
 
 A small fullstack web application to plan a study schedule
 
+## Running frontend
+
+For development build run this command in the ./frontend folder:
+
+```bash
+$ npm run dev
+```
+
+Fo running tests, start the test backend first, then development build, and then:
+
+```bash
+$ npm run cypress:open
+```
+
 ## Running backend
 
 For development build run this command in the ./backend folder:

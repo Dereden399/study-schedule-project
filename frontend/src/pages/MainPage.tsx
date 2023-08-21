@@ -44,6 +44,7 @@ const MainPage = () => {
             variant={"outline"}
             fontSize={"2xl"}
             onClick={() => navigate("/auth/login")}
+            id="login_button"
           >
             Login
           </Button>

@@ -9,6 +9,7 @@ import courseController from "./controllers/courseController";
 import scheduleController from "./controllers/scheduleController";
 import userController from "./controllers/userController";
 import loginController from "./controllers/loginController";
+import testController from "./controllers/testController";
 
 const MONGO_URI =
   (process.env.NODE_ENV === "test"
@@ -32,6 +33,11 @@ app.use("/api/courses", courseController);
 app.use("/api/schedules", scheduleController);
 app.use("/api/users", userController);
 app.use("/api/login", loginController);
+
+if (process.env.NODE_ENV === "test") {
+  app.use("/", testController);
+}
+
 app.use(errorHandler);
 
 export default app;
