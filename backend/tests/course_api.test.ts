@@ -36,14 +36,14 @@ describe("working with initial 2 courses", () => {
   test("returning all courses works good", async () => {
     const res = await api.get("/api/courses/all");
     //const contents = res.body.map((x: { content: any }) => x.content);
-    expect(res.body[0].name).toBe("Saksa 1");
+    expect(res.body[0].title).toBe("Saksa 1");
   });
 
   test("get course by id works", async () => {
     const all = await api.get("/api/courses/all");
     const id = all.body[0].id;
     const res = await api.get(`/api/courses/${id}`);
-    expect(res.body.name).toBe("Saksa 1");
+    expect(res.body.title).toBe("Saksa 1");
   });
 
   test("wrong id does not work", async () => {
@@ -60,10 +60,11 @@ describe("working with initial 2 courses", () => {
     });
     test("adding valid course", async () => {
       const courseInfo = {
-        name: "O1",
-        startDate: "2022-12-12",
-        endDate: "2022-12-22",
+        title: "O1",
+        start: "2022-12-12",
+        end: "2022-12-22",
         info: "some info",
+        allDay: false,
       };
       await api
         .post("/api/courses")
@@ -76,9 +77,10 @@ describe("working with initial 2 courses", () => {
 
     test("adding nonvalid course without name", async () => {
       const courseInfo = {
-        startDate: "2022-12-12",
-        endDate: "2022-12-22",
+        start: "2022-12-12",
+        end: "2022-12-22",
         info: "some info",
+        allDay: false,
       };
       await api
         .post("/api/courses")
@@ -89,9 +91,10 @@ describe("working with initial 2 courses", () => {
 
     test("adding nonvalid course without start date", async () => {
       const courseInfo = {
-        name: "O1",
-        endDate: "2022-12-22",
+        title: "O1",
+        end: "2022-12-22",
         info: "some info",
+        allDay: false,
       };
       await api
         .post("/api/courses")
@@ -102,9 +105,10 @@ describe("working with initial 2 courses", () => {
 
     test("adding nonvalid course without end date", async () => {
       const courseInfo = {
-        startDate: "2022-12-12",
-        name: "O1",
+        start: "2022-12-12",
+        title: "O1",
         info: "some info",
+        allDay: false,
       };
       await api
         .post("/api/courses")
@@ -115,9 +119,10 @@ describe("working with initial 2 courses", () => {
 
     test("adding valid course without info", async () => {
       const courseInfo = {
-        name: "O1",
-        startDate: "2022-12-12",
-        endDate: "2022-12-22",
+        title: "O1",
+        start: "2022-12-12",
+        end: "2022-12-22",
+        allDay: false,
       };
       await api
         .post("/api/courses")
@@ -130,10 +135,11 @@ describe("working with initial 2 courses", () => {
 
     test("added course is really in database", async () => {
       const courseInfo = {
-        name: "O1",
-        startDate: "2022-12-12",
-        endDate: "2022-12-22",
+        title: "O1",
+        start: "2022-12-12",
+        end: "2022-12-22",
         info: "some info",
+        allDay: false,
       };
       await api
         .post("/api/courses")
@@ -141,17 +147,18 @@ describe("working with initial 2 courses", () => {
         .send(courseInfo)
         .expect(201);
       const res = await api.get("/api/courses/all");
-      const id = res.body.find((x: { name: string }) => x.name === "O1").id;
+      const id = res.body.find((x: { title: string }) => x.title === "O1").id;
       const findedRes = await api.get(`/api/courses/${id}`);
-      expect(findedRes.body.name).toBe("O1");
+      expect(findedRes.body.title).toBe("O1");
     });
 
     test("can not add without authorization", async () => {
       const courseInfo = {
-        name: "O1",
-        startDate: "2022-12-12",
-        endDate: "2022-12-22",
+        title: "O1",
+        start: "2022-12-12",
+        end: "2022-12-22",
         info: "some info",
+        allDay: false,
       };
       await api.post("/api/courses").send(courseInfo).expect(401);
     });
@@ -165,7 +172,7 @@ describe("working with initial 2 courses", () => {
       token = result.body.token;
     });
     test("deleting course with valid id", async () => {
-      const courseToDelete = await Course.findOne({ name: "Saksa 1" });
+      const courseToDelete = await Course.findOne({ title: "Saksa 1" });
       if (courseToDelete) {
         const id = courseToDelete._id;
         await api
@@ -183,7 +190,7 @@ describe("working with initial 2 courses", () => {
     });
 
     test("can not delete other user's courses", async () => {
-      const courseToDelete = await Course.findOne({ name: "Saksa 1" });
+      const courseToDelete = await Course.findOne({ title: "Saksa 1" });
       const unrealUser = { username: "aboba", id: "adad123jn1n4r8jrfiu2398" };
       token = jwt.sign(unrealUser, SECRET);
       if (courseToDelete) {
@@ -204,19 +211,22 @@ describe("working with initial 2 courses", () => {
       token = result.body.token;
     });
     test("changing valid course", async () => {
-      const findedCourse = await Course.findOne({ name: "Saksa 1" });
+      const findedCourse = await Course.findOne({ title: "Saksa 1" });
       if (findedCourse) {
         const redacted = {
-          name: findedCourse.name + " very good course for beginners",
-          startDate: findedCourse.startDate.toString(),
-          endDate: findedCourse.endDate.toString(),
+          title: findedCourse.title + " very good course for beginners",
+          start: findedCourse.start.toString(),
+          end: findedCourse.end.toString(),
+          allDay: findedCourse.allDay,
         };
         const result = await api
           .put(`/api/courses/${findedCourse._id.toString()}`)
           .set("Authorization", String("bearer " + token))
           .send(redacted);
         expect(result.status).toBe(200);
-        expect(result.body.name).toBe("Saksa 1 very good course for beginners");
+        expect(result.body.title).toBe(
+          "Saksa 1 very good course for beginners"
+        );
       }
     });
 
@@ -231,9 +241,10 @@ describe("working with initial 2 courses", () => {
       const findedCourse = await Course.findOne({ name: "Saksa 1" });
       if (findedCourse) {
         const redacted = {
-          name: findedCourse.name + " very good course for beginners",
-          startDate: findedCourse.startDate.toString(),
-          endDate: findedCourse.endDate.toString(),
+          title: findedCourse.title + " very good course for beginners",
+          start: findedCourse.start.toString(),
+          end: findedCourse.end.toString(),
+          allDay: findedCourse.allDay,
         };
         const unrealUser = { username: "aboba", id: "adad123jn1n4r8jrfiu2398" };
         token = jwt.sign(unrealUser, SECRET);

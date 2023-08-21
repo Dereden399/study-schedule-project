@@ -7,14 +7,19 @@ A small fullstack web application to plan a study schedule
 For development build run this command in the ./backend folder:
 
 ```bash
-$ docker-compose -f docker-compose.dev.yml up
+$ docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
 ```
 
 For running tests:
 
 ```bash
-$ docker-compose -f docker-compose.test.yml up --abort-on-container-exit && docker logs backend-server-1
+  // Before the first time
+  $ chmod +x run_tests.sh
+
+  $ ./run_tests.sh
 ```
+
+**NOTE**: On Widnows machines you should use Git Bash or something like this to run a bash script. Otherwise, copy-paste all commands from the script into the terminal one by one
 
 ## Technologies used
 
@@ -22,26 +27,3 @@ $ docker-compose -f docker-compose.test.yml up --abort-on-container-exit && dock
 2. Mongodb
 3. Docker
 4. Jest
-
-## Database structure
-
-### User
-
-1. username
-2. password
-3. schedule list
-
-### Schedule
-
-1. course list
-2. name
-3. description
-4. user id
-
-### Course
-
-1. name
-2. starting date
-3. end date
-4. additional info
-5. user id

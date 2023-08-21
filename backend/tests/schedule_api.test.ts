@@ -88,10 +88,11 @@ describe("working with initial 2 schedules", () => {
         description: "hard schedule",
       };
       const course1 = {
-        name: "Saksa 8",
-        startDate: new Date("2023-01-10"),
-        endDate: new Date("2023-02-01"),
+        title: "Saksa 8",
+        start: new Date("2023-01-10"),
+        end: new Date("2023-02-01"),
         info: "very hard course",
+        allDay: false,
       };
       const course1Mongo = new Course(course1);
       const courseRes = await course1Mongo.save();
@@ -166,10 +167,11 @@ describe("working with initial 2 schedules", () => {
       const findedSchedule = await Schedule.findOne({ name: "Aalto" });
       if (findedSchedule) {
         const course1 = {
-          name: "Saksa 9",
-          startDate: new Date("2023-01-10"),
-          endDate: new Date("2023-02-01"),
+          title: "Saksa 9",
+          start: new Date("2023-01-10"),
+          end: new Date("2023-02-01"),
           info: "very hard course",
+          allDay: false,
         };
         const course1Mongo = new Course(course1);
         const courseRes = await course1Mongo.save();
@@ -182,7 +184,7 @@ describe("working with initial 2 schedules", () => {
           .set("Authorization", String("bearer " + token))
           .send(redacted);
         expect(result.status).toBe(200);
-        expect(result.body.courses[2].name).toBe("Saksa 9");
+        expect(result.body.courses[2].title).toBe("Saksa 9");
       }
     });
 
@@ -190,10 +192,11 @@ describe("working with initial 2 schedules", () => {
       const findedSchedule = await Schedule.findOne({ name: "Aalto" });
       if (findedSchedule) {
         const course1 = {
-          name: "Saksa 9",
-          startDate: new Date("2023-01-10"),
-          endDate: new Date("2023-02-01"),
+          title: "Saksa 9",
+          start: new Date("2023-01-10"),
+          end: new Date("2023-02-01"),
           info: "very hard course",
+          allDay: false,
         };
         const result = await api
           .post(`/api/schedules/${findedSchedule._id.toString()}/addCourse`)
@@ -201,7 +204,7 @@ describe("working with initial 2 schedules", () => {
           .send(course1)
           .expect(201);
         expect(result.body.courses).toHaveLength(3);
-        expect(result.body.courses[2].name).toBe("Saksa 9");
+        expect(result.body.courses[2].title).toBe("Saksa 9");
       }
     });
 
