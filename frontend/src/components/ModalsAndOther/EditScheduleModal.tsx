@@ -96,6 +96,7 @@ const EditScheduleModal = ({
                           type="text"
                           {...field}
                           size="lg"
+                          data-cy="edit-name"
                         />
                         <FormErrorMessage>{form.errors.name}</FormErrorMessage>
                       </FormControl>
@@ -118,6 +119,7 @@ const EditScheduleModal = ({
                           type="text"
                           {...field}
                           size="lg"
+                          data-cy="edit-description"
                         />
                         <FormErrorMessage>
                           {form.errors.description}
@@ -140,6 +142,7 @@ const EditScheduleModal = ({
                   colorScheme="teal"
                   type="submit"
                   isLoading={props.isSubmitting}
+                  data-cy="edit-submit-button"
                 >
                   Save
                 </Button>

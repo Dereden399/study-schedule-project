@@ -59,6 +59,7 @@ const NewScheduleForm = ({ onClose }: { onClose: () => void }) => {
                     {...field}
                     type="text"
                     size={"lg"}
+                    data-cy="add-name"
                   />
                   <FormErrorMessage fontSize={"lg"}>
                     {form.errors.name}
@@ -79,6 +80,7 @@ const NewScheduleForm = ({ onClose }: { onClose: () => void }) => {
                     {...field}
                     type="text"
                     size="lg"
+                    data-cy="add-description"
                   />
                   <FormErrorMessage fontSize={"lg"}>
                     {form.errors.description}
@@ -101,6 +103,7 @@ const NewScheduleForm = ({ onClose }: { onClose: () => void }) => {
                 colorScheme="teal"
                 isLoading={props.isSubmitting}
                 size="lg"
+                data-cy="add-submit-button"
               >
                 Add
               </Button>

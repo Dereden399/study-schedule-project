@@ -66,7 +66,7 @@ const RegisterForm = () => {
                     {...field}
                     type="text"
                     size={"lg"}
-                    id="username_field"
+                    data-cy="username-field"
                   />
                   <FormErrorMessage>{form.errors.username}</FormErrorMessage>
                 </FormControl>
@@ -86,7 +86,7 @@ const RegisterForm = () => {
                       {...field}
                       type={showPassword ? "text" : "password"}
                       size={"lg"}
-                      id="password_field"
+                      data-cy="password-field"
                     />
                     <InputRightElement>
                       <IconButton
@@ -119,7 +119,7 @@ const RegisterForm = () => {
               isLoading={props.isSubmitting}
               width={"full"}
               size={"lg"}
-              id="submit_button"
+              data-cy="submit-button"
             >
               Sign in
             </Button>

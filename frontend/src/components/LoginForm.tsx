@@ -56,6 +56,7 @@ const LoginForm = () => {
                     {...field}
                     type="text"
                     size={"lg"}
+                    data-cy="username-field"
                   />
                   <FormErrorMessage>{form.errors.username}</FormErrorMessage>
                 </FormControl>
@@ -75,6 +76,7 @@ const LoginForm = () => {
                       {...field}
                       type={showPassword ? "text" : "password"}
                       size={"lg"}
+                      data-cy="password-field"
                     />
                     <InputRightElement>
                       <IconButton
@@ -107,6 +109,7 @@ const LoginForm = () => {
               isLoading={props.isSubmitting}
               width={"full"}
               size={"lg"}
+              data-cy="submit-button"
             >
               Log in
             </Button>

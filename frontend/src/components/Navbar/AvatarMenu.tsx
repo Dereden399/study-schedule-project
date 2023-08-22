@@ -31,7 +31,7 @@ const AvatarMenu = ({ closeMenu }: { closeMenu: () => void }) => {
         variant={"link"}
         cursor={"pointer"}
         minW={0}
-        aria-label="open-avatarmenu-button"
+        data-cy="open-avatarmenu-button"
       >
         <Avatar name={user.username} />
       </MenuButton>
@@ -43,7 +43,7 @@ const AvatarMenu = ({ closeMenu }: { closeMenu: () => void }) => {
           as={RouterLink}
           to="/"
           onClick={logout}
-          aria-label="logout_button"
+          data-cy="logout-button"
         >
           Log out
         </MenuItem>

@@ -57,6 +57,7 @@ const ScheduleBox = ({ schedule }: { schedule: Schedule }) => {
       _hover={isOpen ? {} : { transform: "scale(1.01)" }}
       transition="0.1s ease-in-out"
       shadow={"md"}
+      data-cy="schedule-box"
     >
       <AlertDialog
         size="xl"
@@ -83,6 +84,7 @@ const ScheduleBox = ({ schedule }: { schedule: Schedule }) => {
                 onClick={deleteHandler}
                 ml={3}
                 size="lg"
+                data-cy="confirm-delete"
               >
                 Delete
               </Button>
@@ -147,6 +149,7 @@ const ScheduleBox = ({ schedule }: { schedule: Schedule }) => {
                 variant={"solid"}
                 onClick={onModalOpen}
                 size={"lg"}
+                data-cy="open-editSchedule-modal"
               >
                 Edit
               </Button>
@@ -155,6 +158,7 @@ const ScheduleBox = ({ schedule }: { schedule: Schedule }) => {
                 variant={"outline"}
                 onClick={onAlertOpen}
                 size={"lg"}
+                data-cy="delete-schedule-button"
               >
                 Delete
               </Button>

@@ -21,7 +21,12 @@ const AddSchedulePopover = () => {
       onClose={onClose}
     >
       <PopoverTrigger>
-        <Button leftIcon={<AddIcon />} size={"lg"} colorScheme={"teal"}>
+        <Button
+          leftIcon={<AddIcon />}
+          size={"lg"}
+          colorScheme={"teal"}
+          data-cy="open-addSchedule-popover"
+        >
           Add
         </Button>
       </PopoverTrigger>
