@@ -10,12 +10,11 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: example
       MONGO_INITDB_DATABASE: the_database
     volumes:
-      - ./mongo_data:/data/db
+      - /data/db
       - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
   
-  study-schedule-backend-container:
-    image: study-schedule-backend-dev
-    container_name: study-schedule-backend-container
+  server:
+    image: study-backend-dev
     build:
       context: .
       dockerfile: Dockerfile.dev

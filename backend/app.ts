@@ -29,10 +29,10 @@ const app = express();
 
 app.use(express.json());
 app.use(tokenExtractor);
-app.use("/api/courses", courseController);
-app.use("/api/schedules", scheduleController);
-app.use("/api/users", userController);
-app.use("/api/login", loginController);
+app.use("/courses", courseController);
+app.use("/schedules", scheduleController);
+app.use("/users", userController);
+app.use("/login", loginController);
 
 if (process.env.NODE_ENV === "test") {
   app.use("/", testController);

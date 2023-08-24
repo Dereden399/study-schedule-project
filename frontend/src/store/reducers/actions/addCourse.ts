@@ -17,6 +17,7 @@ const addCourse = createAsyncThunk(
         course,
         state.user.token
       );
+      console.log(response);
       return response;
     } catch (error) {
       if (error instanceof AxiosError)

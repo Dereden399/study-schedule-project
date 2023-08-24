@@ -1,5 +1,5 @@
 version: "3.8"
 
 services:
-  study-schedule-backend-container:
+  server:
     command: sh -c 'npm run test'

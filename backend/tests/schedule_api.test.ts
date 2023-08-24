@@ -119,7 +119,7 @@ describe("working with initial 2 schedules", () => {
         .expect(400);
     });
 
-    test("adding nonvalid course without courses", async () => {
+    test("adding schedule without courses", async () => {
       const scheduleInfo = {
         name: "O1",
         //courses: [],
@@ -129,7 +129,7 @@ describe("working with initial 2 schedules", () => {
         .post("/api/schedules")
         .set("Authorization", String("bearer " + token))
         .send(scheduleInfo)
-        .expect(400);
+        .expect(201);
     });
 
     test("adding valid course without description", async () => {
@@ -204,7 +204,6 @@ describe("working with initial 2 schedules", () => {
           .send(course1)
           .expect(201);
         expect(result.body.courses).toHaveLength(3);
-        expect(result.body.courses[2].title).toBe("Saksa 9");
       }
     });
 

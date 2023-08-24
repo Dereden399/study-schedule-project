@@ -53,7 +53,7 @@ describe("1 user initially saved", () => {
     const id = all.body[0].id;
     const courses = await api.get(`/api/users/${id}/courses`);
     expect(courses.body).toHaveLength(2);
-    expect(courses.body[0].name).toBe("Saksa 1");
+    expect(courses.body[0].title).toBe("Saksa 1");
   });
 
   describe("adding a new user", () => {

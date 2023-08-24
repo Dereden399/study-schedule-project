@@ -1,0 +1,55 @@
+services:
+  app:
+    image: study-front-dev
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./frontend:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - 3000:5173
+    environment:
+      - VITE_REACT_BACKEND_URL=/api
+      - CHOKIDAR_USEPOLLING=true
+      - WDS_SOCKET_PORT=0
+
+  mongo:
+    image: mongo
+    ports:
+      - 3456:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_DATABASE: the_database
+    volumes:
+      - ./backend/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
+      - /data/db
+
+  server:
+    image: study-backend-dev
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./backend:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - 3001:3000
+    depends_on:
+      - mongo
+    environment:
+      - MONGODB_URI=mongodb://the_username:the_password@mongo:27017/the_database
+      - MONGODB_URI_TEST=mongodb://the_username:the_password@mongo:27017/test?authSource=the_database
+    command: sh -c 'npm run dev'
+
+  nginx:
+    image: nginx:1.20.1
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    ports: 
+      - 8080:80
+    container_name: reverse-proxy
+    depends_on:
+      - app
+      - server
