@@ -46,7 +46,6 @@ export const userReducer = createSlice({
       .addCase(login.fulfilled, (state, action) => {
         if (!action.payload) return;
         state.loading = false;
-        console.log(action.payload.token);
         state.token = action.payload.token;
         state.user = {
           username: action.payload.username,

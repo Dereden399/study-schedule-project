@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   app:
     image: study-front-dev
@@ -7,12 +9,11 @@ services:
     volumes:
       - ./frontend:/usr/src/app
       - /usr/src/app/node_modules
-    ports:
-      - 3000:5173
     environment:
-      - VITE_REACT_BACKEND_URL=/api
+      - VITE_REACT_BACKEND_URL=${VITE_REACT_BACKEND_URL}
       - CHOKIDAR_USEPOLLING=true
       - WDS_SOCKET_PORT=0
+    container_name: study-front-dev
 
   mongo:
     image: mongo
@@ -34,17 +35,16 @@ services:
     volumes:
       - ./backend:/usr/src/app
       - /usr/src/app/node_modules
-    ports:
-      - 3001:3000
     depends_on:
       - mongo
     environment:
       - MONGODB_URI=mongodb://the_username:the_password@mongo:27017/the_database
       - MONGODB_URI_TEST=mongodb://the_username:the_password@mongo:27017/test?authSource=the_database
     command: sh -c 'npm run dev'
+    container_name: study-backend-dev
 
   nginx:
-    image: nginx:1.20.1
+    image: nginx:1.20.1-alpine
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
     ports: 

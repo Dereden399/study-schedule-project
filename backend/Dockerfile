@@ -1,0 +1,18 @@
+FROM node:19-alpine AS base
+
+WORKDIR /usr/src/app
+
+COPY . .
+
+RUN npm ci
+
+RUN npm run tsc
+
+
+FROM base AS prod-stage
+
+USER node
+
+CMD npm start
+
+

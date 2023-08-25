@@ -1,0 +1,10 @@
+version: '3.8'
+
+services:
+  app:
+    image: study-backend-prod
+    build: .
+    container_name: study-backend-prod
+    environment:
+      - MONGODB_URI=${MONGODB_URI}
+      - MONGODB_URI_TEST=${MONGODB_URI_TEST}

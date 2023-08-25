@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   app:
     image: study-front-dev
@@ -10,4 +12,4 @@ services:
     ports:
       - 3000:5173
     environment:
-      - VITE_REACT_BACKEND_URL=/api
+      - VITE_REACT_BACKEND_URL=${VITE_REACT_BACKEND_URL}
