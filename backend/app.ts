@@ -1,4 +1,4 @@
-import express from "express";
+import express, { RequestHandler } from "express";
 import "express-async-errors";
 import mongoose from "mongoose";
 import "dotenv/config";
@@ -29,13 +29,20 @@ const app = express();
 
 app.use(express.json());
 app.use(tokenExtractor);
-app.use("/courses", courseController);
-app.use("/schedules", scheduleController);
-app.use("/users", userController);
-app.use("/login", loginController);
+app.use("/api/courses", courseController);
+app.use("/api/schedules", scheduleController);
+app.use("/api/users", userController);
+app.use("/api/login", loginController);
 
 if (process.env.NODE_ENV === "test") {
   app.use("/", testController);
+}
+
+if (process.env.NODE_ENV === "deploy") {
+  app.use(express.static("dist"));
+  app.use("*", ((_req, res) => {
+    res.sendFile("index.html", { root: "./dist" });
+  }) as RequestHandler);
 }
 
 app.use(errorHandler);

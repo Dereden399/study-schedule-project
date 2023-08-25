@@ -7,6 +7,7 @@
     "test": "cross-env NODE_ENV=test jest --verbose --forceExit --detectOpenHandles",
     "tsc": "tsc",
     "start": "cross-env NODE_ENV=production node build/index.js",
+    "start:deployVersion": "cross-env NODE_ENV=deploy node build/index.js",
     "start:test": "cross-env NODE_ENV=test ts-node-dev index.ts",
     "dev": "cross-env NODE_ENV=development ts-node-dev index.ts",
     "lint": "eslint --ext .ts ."

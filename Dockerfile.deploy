@@ -1,0 +1,36 @@
+FROM node:19-alpine AS back-base
+
+WORKDIR /usr/src/app
+
+COPY backend .
+
+RUN npm ci
+
+RUN npm run tsc
+
+
+
+FROM node:19-alpine AS front-build
+
+WORKDIR /usr/src/app
+
+COPY frontend .
+
+RUN npm ci
+
+RUN npm run build
+
+
+
+
+FROM back-base AS prod-stage
+
+COPY --from=front-build /usr/src/app/dist ./dist
+
+EXPOSE 3000
+
+USER node
+
+CMD npm run start:deployVersion
+
+
